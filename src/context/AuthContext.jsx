@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
           isAuthenticated: true,
           user: res.data,
         }));
-        console.log(res.data.username);
       })
       .catch(() => {
         console.log("user not logged in.");

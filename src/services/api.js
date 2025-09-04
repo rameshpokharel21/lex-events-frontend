@@ -5,4 +5,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
+export const fetchUpcomingEvents = () => api.get("/events/upcoming");
+export const fetchEventById = (id) => api.get(`/events/${id}`);
+
 export default api;

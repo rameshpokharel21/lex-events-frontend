@@ -5,6 +5,9 @@ import useAuth from "./hooks/useAuth";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import EventList from "./components/EventList";
+import EventDetails from "./components/EventDetails";
+import CreateEvent from "./components/CreateEvent";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -24,6 +27,17 @@ function App() {
           <Route
             path="/"
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/events"
+            element={isAuthenticated ? <EventList /> : <Navigate to="/login" />}
+          />
+          <Route path="/events/:id" element={<EventDetails />} />
+          <Route
+            path="/events/create"
+            element={
+              isAuthenticated ? <CreateEvent /> : <Navigate to="/login" />
+            }
           />
         </Routes>
       </main>
