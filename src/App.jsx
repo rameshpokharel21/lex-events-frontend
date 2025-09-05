@@ -8,6 +8,9 @@ import SignUp from "./components/SignUp";
 import EventList from "./components/EventList";
 import EventDetails from "./components/EventDetails";
 import CreateEvent from "./components/CreateEvent";
+import SendOtp from "./components/SendOtp";
+import VerifyOtp from "./components/VerifyOtp";
+import CreateEventGuard from "./components/CreateEventGuard";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -36,9 +39,13 @@ function App() {
           <Route
             path="/events/create"
             element={
-              isAuthenticated ? <CreateEvent /> : <Navigate to="/login" />
+              <CreateEventGuard>
+                <CreateEvent />
+              </CreateEventGuard>
             }
           />
+          <Route path="/send-otp" element={<SendOtp />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
         </Routes>
       </main>
     </div>

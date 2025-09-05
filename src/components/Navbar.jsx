@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
       <NavLink to="/" className="text-xl font-bold hover:underline">
-        Lex Events
+        Home
       </NavLink>
 
       {loading ? (
