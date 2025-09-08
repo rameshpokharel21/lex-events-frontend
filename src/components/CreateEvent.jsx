@@ -14,10 +14,9 @@ const CreateEvent = () => {
     showContactInfo: false,
   });
 
-  const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -29,30 +28,56 @@ const CreateEvent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
+    const errors = {};
     const now = new Date();
     const selectedDate = new Date(form.date);
-    if (selectedDate < now) {
-      setFormErrors((prev) => ({
-        ...prev,
-        date: "Date must be in the future.",
-      }));
+    const minAllowedDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    if (!form.title.trim()) errors.title = "Title is required.";
+    if (!form.description.trim())
+      errors.description = "Description is required";
+    if (!form.location.trim()) errors.location = "Location is requried.";
+
+    if (!form.isFree && (!form.entryFee || parseFloat(form.entryFee) < 0)) {
+      errors.entryFee = "Entry fee must be greater than $0.00 for paid events.";
+    }
+
+    if (selectedDate < minAllowedDate) {
+      errors.date("Date must be  at least 1 day in the future.");
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
-    setIsLoading(true);
+
     try {
+      setIsLoading(true);
       const payload = { ...form };
       if (form.isFree) {
         payload.entryFee = null;
       }
 
       await createEvent(payload);
-      sessionStorage.removeItem("phoneVerifiedForEvent");
+
+      setForm({
+        title: "",
+        description: "",
+        location: "",
+        date: "",
+        isFree: true,
+        entryFee: "",
+        showContactInfo: false,
+      });
+
+      sessionStorage.removeItem("emailVerifiedForEvent");
+      //navigate after delay
+      //setTimeout(() => navigate("/events"), 1500);
       navigate("/events");
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Event creation failed.");
+      setFormErrors(err.response?.data?.message || "Event creation failed.");
     } finally {
       setIsLoading(false);
     }
@@ -64,7 +89,7 @@ const CreateEvent = () => {
       className="max-w-xl mx-auto bg-white p-6 shadow rounded"
     >
       <h2 className="text-xl font-bold mb-4">Create New Event</h2>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+
       <input
         className="w-full border p-2 mb-3 rounded"
         type="text"
@@ -72,8 +97,11 @@ const CreateEvent = () => {
         placeholder="Title"
         value={form.title}
         onChange={handleChange}
-        required
       />
+      {formErrors.title && (
+        <div className="text-red-500 mb-2">{formErrors.title}</div>
+      )}
+
       <input
         className="w-full border p-2 mb-3 rounded"
         type="text"
@@ -81,8 +109,11 @@ const CreateEvent = () => {
         placeholder="Description"
         value={form.description}
         onChange={handleChange}
-        required
       />
+      {formErrors.description && (
+        <div className="text-red-500 mb-2">{formErrors.description}</div>
+      )}
+
       <input
         className="w-full border p-2 mb-3 rounded"
         type="text"
@@ -90,16 +121,20 @@ const CreateEvent = () => {
         placeholder="Location"
         value={form.location}
         onChange={handleChange}
-        required
       />
+      {formErrors.location && (
+        <div className="text-red-500 mb-2">{formErrors.location}</div>
+      )}
+
       <input
         className="w-full border p-2 mb-3 rounded"
         type="datetime-local"
         name="date"
         value={form.date}
         onChange={handleChange}
-        required
-        min={new Date().toISOString().slice(0, 16)}
+        min={new Date(Date.now() + 24 * 60 * 60 * 1000)
+          .toISOString()
+          .slice(0, 16)}
       />
       {formErrors.date && (
         <div className="text-red-500 mb-2">{formErrors.date}</div>
@@ -114,18 +149,24 @@ const CreateEvent = () => {
         />{" "}
         This event is free
       </label>
+
       {!form.isFree && (
-        <input
-          className="w-full border p-2 mb-3 rounded"
-          type="number"
-          step="0.01"
-          name="entryFee"
-          placeholder="Entry Fee"
-          value={form.entryFee}
-          onChange={handleChange}
-          required
-        />
+        <>
+          <input
+            className="w-full border p-2 mb-3 rounded"
+            type="number"
+            step="0.01"
+            name="entryFee"
+            placeholder="Entry Fee"
+            value={form.entryFee}
+            onChange={handleChange}
+          />
+          {formErrors.entryFee && (
+            <div className="text-red-500 mb-2">{formErrors.entryFee}</div>
+          )}
+        </>
       )}
+
       <label className="block mb-3">
         <input
           type="checkbox"

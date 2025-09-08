@@ -8,6 +8,8 @@ const api = axios.create({
 export const fetchUpcomingEvents = () => api.get("/events/upcoming");
 export const fetchEventById = (id) => api.get(`/events/${id}`);
 export const createEvent = (eventData) => api.post("/events", eventData);
-export const sendOtp = (data) => api.post("/user/send-otp", data);
-export const verifyOtp = (payload) => api.post("/user/verify-phone", payload);
+export const sendOtp = () => api.post("/email/send-otp");
+export const verifyOtp = (payload) => api.post("/email/verify-otp", payload);
+//payload = {otp: "123456"}
+
 export default api;

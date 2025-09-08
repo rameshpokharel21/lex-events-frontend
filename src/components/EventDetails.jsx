@@ -36,7 +36,7 @@ const EventDetails = () => {
       </p>
       <p className="mb-2">
         <strong>Entry Fee: </strong>
-        {event.isFree ? "Free" : `$${event.entryFee}`}
+        {event.isFree ? "Free" : `$${Number(event.entryFee).toFixed(2)}`}
       </p>
       {event.showContactInfo && (
         <>

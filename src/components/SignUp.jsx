@@ -23,22 +23,22 @@ const SignUp = () => {
     setSuccess("");
 
     // Basic validation
-    if (!form.username || !form.email || !form.phoneNumber || !form.password) {
-      setError("All fields are required.");
+    if (!form.username.trim() || !form.email.trim() || !form.password.trim()) {
+      setError("All fields are Required except phone number.");
       return;
     }
 
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
       setError("Please enter a valid email address.");
       return;
     }
 
-    if (!/^\d{10}$/.test(form.phoneNumber)) {
+    if (form.phoneNumber.trim() && !/^\d{10}$/.test(form.phoneNumber.trim())) {
       setError("Phone number must be 10 digits.");
       return;
     }
 
-    if (form.password.length < 6) {
+    if (form.password.trim().length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }

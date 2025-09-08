@@ -6,24 +6,27 @@ const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const phone = sessionStorage.getItem("pendingPhone");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!phone) {
+    const pending = sessionStorage.getItem("pendingEmailVerification");
+    if (!pending) {
       navigate("/send-otp");
     }
-  }, [phone, navigate]);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await verifyOtp({ phoneNumber: phone, otp: otp });
-      sessionStorage.setItem("phoneVerifiedForEvent", "true");
-      sessionStorage.removeItem("pendingPhone");
+      setIsLoading(true);
+      await verifyOtp({ otp: otp });
+      sessionStorage.setItem("emailVerifiedForEvent", "true");
+      sessionStorage.removeItem("pendingEmailVerification");
       navigate("/events/create");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid OTP.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -36,17 +39,16 @@ const VerifyOtp = () => {
       {error && <p className="text-red-500 mb-2">{error}</p>}
       <input
         type="text"
+        pattern="\d{6}"
+        maxLength={6}
         value={otp}
         onChange={(e) => setOtp(e.target.value)}
         placeholder="Enter OTP"
         className="block w-full border p-2 mb-4 rounded"
         required
       />
-      <button
-        type="submit"
-        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
-      >
-        Verify OTP
+      <button type="submit">
+        {isLoading ? "Verifying OTP..." : "Verify OTP"}
       </button>
     </form>
   );

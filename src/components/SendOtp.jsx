@@ -3,44 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../services/api";
 
 const SendOtp = () => {
-  const [phone, setPhone] = useState("");
+  //const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  //const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await sendOtp({ phoneNumber: phone });
-      sessionStorage.setItem("pendingPhone", phone);
+      setIsLoading(true);
+      await sendOtp();
+      sessionStorage.setItem("pendingEmailVerification", "true");
       navigate("/verify-otp");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send OTP.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-6 bg-white shadow rounded"
+    <button
+      onClick={handleSubmit}
+      disabled={isLoading}
+      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
     >
-      <h2 className="text-xl font-bold mb-4">Phone Verification</h2>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-      <input
-        type="text"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Enter phone number"
-        className="block-w-full border p-2 mb-4 rounded"
-        required
-      />
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-      >
-        Send OTP
-      </button>
-    </form>
+      {isLoading ? "Sending..." : "Send OTP"}
+    </button>
   );
 };
 
