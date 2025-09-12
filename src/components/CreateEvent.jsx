@@ -16,6 +16,7 @@ const CreateEvent = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -43,8 +44,10 @@ const CreateEvent = () => {
       errors.entryFee = "Entry fee must be greater than $0.00 for paid events.";
     }
 
-    if (selectedDate < minAllowedDate) {
-      errors.date("Date must be  at least 1 day in the future.");
+    if (!form.date) {
+      errors.date = "Date is required.";
+    } else if (selectedDate < minAllowedDate) {
+      errors.date = "Date must be  at least 1 day in the future.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -54,13 +57,16 @@ const CreateEvent = () => {
 
     try {
       setIsLoading(true);
+      setFormErrors({});
+
       const payload = { ...form };
       if (form.isFree) {
         payload.entryFee = null;
       }
 
-      await createEvent(payload);
+      await createEvent(payload); //backend will reject if email not recently verified
 
+      //reset form
       setForm({
         title: "",
         description: "",
@@ -70,14 +76,15 @@ const CreateEvent = () => {
         entryFee: "",
         showContactInfo: false,
       });
-
       sessionStorage.removeItem("emailVerifiedForEvent");
-      //navigate after delay
-      //setTimeout(() => navigate("/events"), 1500);
+
       navigate("/events");
     } catch (err) {
-      console.error(err);
-      setFormErrors(err.response?.data?.message || "Event creation failed.");
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Event creation failed.";
+      setFormErrors({ general: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +96,12 @@ const CreateEvent = () => {
       className="max-w-xl mx-auto bg-white p-6 shadow rounded"
     >
       <h2 className="text-xl font-bold mb-4">Create New Event</h2>
+
+      {formErrors.general && (
+        <div className="text-red-600 font-semibold mb-4">
+          {formErrors.general}
+        </div>
+      )}
 
       <input
         className="w-full border p-2 mb-3 rounded"

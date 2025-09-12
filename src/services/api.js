@@ -12,4 +12,6 @@ export const sendOtp = () => api.post("/email/send-otp");
 export const verifyOtp = (payload) => api.post("/email/verify-otp", payload);
 //payload = {otp: "123456"}
 
+//export const isEmailVerified = () => api.get("auth/email/is-verified");
+
 export default api;

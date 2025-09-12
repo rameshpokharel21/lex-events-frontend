@@ -1,36 +1,42 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
+
+const maxTime = import.meta.env.VITE_OTP_MAX_AGE_MS;
+
+const isOtpStillValid = () => {
+  const verified = sessionStorage.getItem("emailVerifiedForEvent");
+  const timestamp = sessionStorage.getItem("emailVerifiedAt");
+  if (verified !== "true" || !timestamp) return false;
+  const age = Date.now() - parseInt(timestamp, 15);
+  return age <= maxTime;
+};
 
 const CreateEventGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  const pending = sessionStorage.getItem("pendingEmailVerification");
-  const emailVerified = sessionStorage.getItem("emailVerifiedForEvent");
-  const requireEmailVerification =
-    import.meta.env.VITE_REQUIRE_EMAIL_VERIFICATION === "true";
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
-    } else if (requireEmailVerification && !pending && !emailVerified) {
-      navigate("/send-otp");
+      return;
     }
-  }, [
-    isAuthenticated,
-    emailVerified,
-    pending,
-    navigate,
-    requireEmailVerification,
-  ]);
 
-  return isAuthenticated && (!requireEmailVerification || emailVerified) ? (
-    children
-  ) : (
-    <Spinner />
-  );
+    if (isOtpStillValid()) {
+      setIsLoading(false);
+    } else {
+      sessionStorage.removeItem("emailVerifiedForEvent");
+      sessionStorage.removeItem("emailVerifiedAt");
+
+      navigate("/send-otp", {
+        state: { fromCreateEvent: true },
+      });
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isLoading) return <Spinner />;
+  return <>{children}</>;
 };
-
 export default CreateEventGuard;

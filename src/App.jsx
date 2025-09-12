@@ -11,6 +11,7 @@ import CreateEvent from "./components/CreateEvent";
 import SendOtp from "./components/SendOtp";
 import VerifyOtp from "./components/VerifyOtp";
 import CreateEventGuard from "./components/CreateEventGuard";
+import SomeComponent from "./components/SomeComponent";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -46,6 +47,7 @@ function App() {
           />
           <Route path="/send-otp" element={<SendOtp />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/random" element={<SomeComponent />} />
         </Routes>
       </main>
     </div>
