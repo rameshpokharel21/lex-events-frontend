@@ -76,7 +76,9 @@ const CreateEvent = () => {
         entryFee: "",
         showContactInfo: false,
       });
-      sessionStorage.removeItem("emailVerifiedForEvent");
+      //for multiple event creation within expiry time, don't remove session.
+      //sessionStorage.removeItem("emailVerifiedForEvent");
+      //sessionStorage.removeItem("emailVerifiedAt");
 
       navigate("/events");
     } catch (err) {
@@ -115,14 +117,16 @@ const CreateEvent = () => {
         <div className="text-red-500 mb-2">{formErrors.title}</div>
       )}
 
-      <input
-        className="w-full border p-2 mb-3 rounded"
-        type="text"
-        name="description"
-        placeholder="Description"
-        value={form.description}
-        onChange={handleChange}
-      />
+      <label className="block mb-3">
+        <textarea
+          className="w-full border p-2 mb-3 rounded resize-none"
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          rows={4}
+        />
+      </label>
       {formErrors.description && (
         <div className="text-red-500 mb-2">{formErrors.description}</div>
       )}
@@ -139,16 +143,18 @@ const CreateEvent = () => {
         <div className="text-red-500 mb-2">{formErrors.location}</div>
       )}
 
-      <input
-        className="w-full border p-2 mb-3 rounded"
-        type="datetime-local"
-        name="date"
-        value={form.date}
-        onChange={handleChange}
-        min={new Date(Date.now() + 24 * 60 * 60 * 1000)
-          .toISOString()
-          .slice(0, 16)}
-      />
+      <label className="block mb-3">
+        <input
+          className="w-full border p-2 mb-3 rounded"
+          type="datetime-local"
+          name="date"
+          value={form.date}
+          onChange={handleChange}
+          min={new Date(Date.now() + 24 * 60 * 60 * 1000)
+            .toISOString()
+            .slice(0, 16)}
+        />
+      </label>
       {formErrors.date && (
         <div className="text-red-500 mb-2">{formErrors.date}</div>
       )}

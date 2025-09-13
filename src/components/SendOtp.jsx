@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sendOtp } from "../services/api";
 
 const SendOtp = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +16,7 @@ const SendOtp = () => {
       await sendOtp();
 
       navigate("/verify-otp", {
-        state: { fromCreateEvent: location.state?.fromCreateEvent },
+        state: { fromCreateEvent: true },
       });
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send OTP.");

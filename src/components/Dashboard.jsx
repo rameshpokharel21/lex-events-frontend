@@ -25,7 +25,7 @@ const Dashboard = () => {
             <p className="mb-6 text-lg text-center">
               Hello, <strong>{user.username}</strong>
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 justify-items-center gap-4 mb-6">
               <button
                 onClick={() => navigate("/events")}
                 className="bg-blue-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
@@ -37,13 +37,6 @@ const Dashboard = () => {
                 className="bg-green-600 text-white font-semibold px-4 py-3 rounded-lg hover:bg-green-700 transition duration-300"
               >
                 Create Event
-              </button>
-
-              <button
-                onClick={() => navigate("/random")}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300"
-              >
-                Form
               </button>
             </div>
           </>

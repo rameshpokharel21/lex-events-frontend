@@ -2,16 +2,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
-
-const maxTime = import.meta.env.VITE_OTP_MAX_AGE_MS;
-
-const isOtpStillValid = () => {
-  const verified = sessionStorage.getItem("emailVerifiedForEvent");
-  const timestamp = sessionStorage.getItem("emailVerifiedAt");
-  if (verified !== "true" || !timestamp) return false;
-  const age = Date.now() - parseInt(timestamp, 15);
-  return age <= maxTime;
-};
+import { isEmailVerified } from "../services/api";
 
 const CreateEventGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -19,21 +10,47 @@ const CreateEventGuard = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
+    const checkOtp = async () => {
+      if (!isAuthenticated) {
+        navigate("/login");
+        return;
+      }
 
-    if (isOtpStillValid()) {
-      setIsLoading(false);
-    } else {
-      sessionStorage.removeItem("emailVerifiedForEvent");
-      sessionStorage.removeItem("emailVerifiedAt");
+      const alreadyVerified = sessionStorage.getItem("emailVerifiedForEvent");
+      const verifiedAt = sessionStorage.getItem("emailVerifiedAt");
 
-      navigate("/send-otp", {
-        state: { fromCreateEvent: true },
-      });
-    }
+      //check if alreadyverified flag AND timestamp are available
+      if (alreadyVerified === "true" && verifiedAt) {
+        const now = Date.now();
+        const expiryMillis = 15 * 60 * 1000;
+        const verifiedTime = parseInt(verifiedAt, 10);
+        if (now - verifiedTime < expiryMillis) {
+          setIsLoading(false);
+          return;
+        } else {
+          //expired, clean up
+          sessionStorage.removeItem("emailVerifiedForEvent");
+          sessionStorage.removeItem("emailVerifiedAt");
+        }
+      }
+
+      //check with backend if expired or not
+      try {
+        const res = await isEmailVerified();
+        if (res.data.verified) {
+          sessionStorage.setItem("emailVerifiedForEvent", "true");
+          sessionStorage.setItem("emailVerifiedAt", Date.now().toString());
+          setIsLoading(false);
+        } else {
+          navigate("/send-otp");
+        }
+      } catch (err) {
+        console.error("Error verifying email", err);
+        navigate("/send-otp");
+      }
+    };
+
+    checkOtp();
   }, [isAuthenticated, navigate]);
 
   if (isLoading) return <Spinner />;

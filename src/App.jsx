@@ -47,7 +47,6 @@ function App() {
           />
           <Route path="/send-otp" element={<SendOtp />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/random" element={<SomeComponent />} />
         </Routes>
       </main>
     </div>

@@ -50,7 +50,15 @@ const VerifyOtp = () => {
         className="block w-full border p-2 mb-4 rounded"
         required
       />
-      <button type="submit">
+      <button
+        type="submit"
+        disabled={isLoading}
+        className={`w-full px-4 py-2 rounded-lg text-white font-medium ${
+          isLoading
+            ? "bg-blue-300 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+        }`}
+      >
         {isLoading ? "Verifying OTP..." : "Verify OTP"}
       </button>
     </form>

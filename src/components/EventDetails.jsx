@@ -19,9 +19,13 @@ const EventDetails = () => {
   if (!event) return <div>Event not found.</div>;
 
   return (
-    <div className="max-w-xl mx-auto mt-6 bg-white p-6 rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">{event.title}</h1>
-      <p className="mb-2 text-gray-700">{event.description}</p>
+    <div
+      className="max-w-3xl mx-auto p-6 rounded-xl shadow-lg 
+                bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 
+                text-white"
+    >
+      <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
+      <p className="mb-2">{event.description}</p>
       <p className="mb-2">
         <strong>Location: </strong>
         {event.location}
@@ -44,10 +48,12 @@ const EventDetails = () => {
             <strong>Email: </strong>
             {event.creator?.email}
           </p>
-          <p>
-            <strong>Phone: </strong>
-            {event.creator?.phoneNumber}
-          </p>
+          {event.creator?.phoneNumber && (
+            <p>
+              <strong>Phone: </strong>
+              {event.creator.phoneNumber}
+            </p>
+          )}
         </>
       )}
     </div>
