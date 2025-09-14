@@ -83,10 +83,20 @@ const CreateEvent = () => {
       navigate("/events");
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Event creation failed.";
-      setFormErrors({ general: errorMessage });
+        err.response?.data.error || err.response?.data?.message;
+      if (
+        err.response?.status === 403 &&
+        typeof errorMessage === "string" &&
+        errorMessage.includes("OTP expired")
+      ) {
+        navigate("/send-otp");
+      } else {
+        const errorMessage =
+          err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Event creation failed.";
+        setFormErrors({ general: errorMessage });
+      }
     } finally {
       setIsLoading(false);
     }
