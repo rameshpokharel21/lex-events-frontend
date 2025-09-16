@@ -2,7 +2,7 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
-import api from "../services/api";
+import { login, getUser } from "../services/api";
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -22,10 +22,19 @@ const Login = () => {
 
     try {
       setIsLoading(() => true);
-      await api.post("/auth/login", form);
-      const res = await api.get("auth/user");
+      //1.Login api call
+      await login(form);
+      //2.Fetch User details
+      const res = await getUser();
+      console.log("From Login: user: ", res.data);
+      //3.update with auth context
       setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
-      navigate("/");
+      //4.Redirect based on role
+      if (res.data.roles.includes("ROLE_ADMIN")) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error(err);
       setError(() => err.response?.data?.message || "Login failed.");

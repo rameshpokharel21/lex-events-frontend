@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { fetchUpcomingEvents } from "../services/api";
+import { deleteEvent, fetchUpcomingEvents } from "../services/api";
 import Spinner from "./Spinner";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { user, loading } = useAuth();
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+  //console.log("logged in user: ", user);
+  //console.log("user roles:", user?.roles);
   const colors = [
     "bg-blue-200",
     "bg-green-200",
@@ -25,7 +30,20 @@ const EventList = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) return <Spinner />;
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      setIsLoading(true);
+      await deleteEvent(eventId);
+      setEvents(events.filter((e) => e.eventId !== eventId)); //update UI
+    } catch (err) {
+      alert("user could not be deleted!");
+      console.error(err.response?.data?.message || err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (loading || isLoading) return <Spinner />;
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
@@ -60,6 +78,14 @@ const EventList = () => {
                 <p className="text-sm text-gray-700">
                   Date: {new Date(event.date).toLocaleString()}
                 </p>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDeleteEvent(event.eventId)}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Delete Event
+                  </button>
+                )}
               </div>
             );
           })}

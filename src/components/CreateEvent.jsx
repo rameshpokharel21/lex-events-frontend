@@ -103,120 +103,133 @@ const CreateEvent = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-xl mx-auto bg-white p-6 shadow rounded"
-    >
-      <h2 className="text-xl font-bold mb-4">Create New Event</h2>
-
-      {formErrors.general && (
-        <div className="text-red-600 font-semibold mb-4">
-          {formErrors.general}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Create New Event
+          </h1>
+          <p className="text-gray-600">
+            Fill out the details below to create your event
+          </p>
         </div>
-      )}
 
-      <input
-        className="w-full border p-2 mb-3 rounded"
-        type="text"
-        name="title"
-        placeholder="Title"
-        value={form.title}
-        onChange={handleChange}
-      />
-      {formErrors.title && (
-        <div className="text-red-500 mb-2">{formErrors.title}</div>
-      )}
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 backdrop-blur-sm"></div>
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-xl mx-auto bg-white p-6 shadow rounded"
+        >
+          {formErrors.general && (
+            <div className="text-red-600 font-semibold mb-4">
+              {formErrors.general}
+            </div>
+          )}
 
-      <label className="block mb-3">
-        <textarea
-          className="w-full border p-2 mb-3 rounded resize-none"
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          rows={4}
-        />
-      </label>
-      {formErrors.description && (
-        <div className="text-red-500 mb-2">{formErrors.description}</div>
-      )}
-
-      <input
-        className="w-full border p-2 mb-3 rounded"
-        type="text"
-        name="location"
-        placeholder="Location"
-        value={form.location}
-        onChange={handleChange}
-      />
-      {formErrors.location && (
-        <div className="text-red-500 mb-2">{formErrors.location}</div>
-      )}
-
-      <label className="block mb-3">
-        <input
-          className="w-full border p-2 mb-3 rounded"
-          type="datetime-local"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
-          min={new Date(Date.now() + 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 16)}
-        />
-      </label>
-      {formErrors.date && (
-        <div className="text-red-500 mb-2">{formErrors.date}</div>
-      )}
-
-      <label className="block mb-3">
-        <input
-          type="checkbox"
-          name="isFree"
-          checked={form.isFree}
-          onChange={handleChange}
-        />{" "}
-        This event is free
-      </label>
-
-      {!form.isFree && (
-        <>
           <input
             className="w-full border p-2 mb-3 rounded"
-            type="number"
-            step="0.01"
-            name="entryFee"
-            placeholder="Entry Fee"
-            value={form.entryFee}
+            //className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={form.title}
             onChange={handleChange}
           />
-          {formErrors.entryFee && (
-            <div className="text-red-500 mb-2">{formErrors.entryFee}</div>
+          {formErrors.title && (
+            <div className="text-red-500 mb-2">{formErrors.title}</div>
           )}
-        </>
-      )}
 
-      <label className="block mb-3">
-        <input
-          type="checkbox"
-          name="showContactInfo"
-          checked={form.showContactInfo}
-          onChange={handleChange}
-        />{" "}
-        Show my contact info publicly
-      </label>
+          <label className="block mb-3">
+            <textarea
+              className="w-full border p-2 mb-3 rounded resize-none"
+              name="description"
+              placeholder="Description"
+              value={form.description}
+              onChange={handleChange}
+              rows={4}
+            />
+          </label>
+          {formErrors.description && (
+            <div className="text-red-500 mb-2">{formErrors.description}</div>
+          )}
 
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-        >
-          Create Event
-        </button>
-      )}
-    </form>
+          <input
+            className="w-full border p-2 mb-3 rounded"
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={form.location}
+            onChange={handleChange}
+          />
+          {formErrors.location && (
+            <div className="text-red-500 mb-2">{formErrors.location}</div>
+          )}
+
+          <label className="block mb-3">
+            <input
+              className="w-full border p-2 mb-3 rounded"
+              type="datetime-local"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              min={new Date(Date.now() + 24 * 60 * 60 * 1000)
+                .toISOString()
+                .slice(0, 16)}
+            />
+          </label>
+          {formErrors.date && (
+            <div className="text-red-500 mb-2">{formErrors.date}</div>
+          )}
+
+          <label className="block mb-3">
+            <input
+              type="checkbox"
+              name="isFree"
+              checked={form.isFree}
+              onChange={handleChange}
+            />{" "}
+            This event is free
+          </label>
+
+          {!form.isFree && (
+            <>
+              <input
+                className="w-full border p-2 mb-3 rounded"
+                type="number"
+                step="0.01"
+                name="entryFee"
+                placeholder="Entry Fee"
+                value={form.entryFee}
+                onChange={handleChange}
+              />
+              {formErrors.entryFee && (
+                <div className="text-red-500 mb-2">{formErrors.entryFee}</div>
+              )}
+            </>
+          )}
+
+          <label className="block mb-3">
+            <input
+              type="checkbox"
+              name="showContactInfo"
+              checked={form.showContactInfo}
+              onChange={handleChange}
+            />{" "}
+            Show my contact info publicly
+          </label>
+
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+            >
+              Create Event
+            </button>
+          )}
+        </form>
+      </div>
+    </div>
   );
 };
 

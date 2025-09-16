@@ -11,10 +11,14 @@ import CreateEvent from "./components/CreateEvent";
 import SendOtp from "./components/SendOtp";
 import VerifyOtp from "./components/VerifyOtp";
 import CreateEventGuard from "./components/CreateEventGuard";
-import SomeComponent from "./components/SomeComponent";
+
+import AdminRoute from "./components/admin/AdminRoute";
+import AdminDashboard from "./components/admin/AdminDashboard";
+import UserList from "./components/admin/UserList";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  console.log(user);
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -31,6 +35,22 @@ function App() {
           <Route
             path="/"
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <UserList />
+              </AdminRoute>
+            }
           />
           <Route
             path="/events"

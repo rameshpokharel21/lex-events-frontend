@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Spinner from "./Spinner";
-import api from "../services/api";
+import { register } from "../services/api";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -8,6 +8,7 @@ const SignUp = () => {
     email: "",
     phoneNumber: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -23,7 +24,12 @@ const SignUp = () => {
     setSuccess("");
 
     // Basic validation
-    if (!form.username.trim() || !form.email.trim() || !form.password.trim()) {
+    if (
+      !form.username.trim() ||
+      !form.email.trim() ||
+      !form.password.trim() ||
+      !form.confirmPassword.trim
+    ) {
       setError("All fields are Required except phone number.");
       return;
     }
@@ -43,11 +49,23 @@ const SignUp = () => {
       return;
     }
 
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const res = await api.post("/auth/register", form);
+      const { confirmPassword, ...data } = form;
+      const res = await register(data);
       setSuccess("Registered successfully! You can login now .");
-      setForm({ username: "", email: "", phoneNumber: "", password: "" });
+      setForm({
+        username: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (err) {
       setError(err.response?.data?.message || "Register failed.");
     } finally {
@@ -103,6 +121,17 @@ const SignUp = () => {
         key="password"
         id="password"
         name="password"
+        onChange={handleChange}
+      />
+
+      <input
+        className="block w-full border px-3 py-2 mb-4 rounded"
+        type="password"
+        placeholder="Confirm Password"
+        value={form.confirmPassword}
+        key="confirmPassword"
+        id="confirmPassword"
+        name="confirmPassword"
         onChange={handleChange}
       />
       {isLoading ? (
