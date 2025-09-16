@@ -121,6 +121,7 @@ const SignUp = () => {
         key="password"
         id="password"
         name="password"
+        autoComplete="new-password"
         onChange={handleChange}
       />
 
@@ -132,6 +133,7 @@ const SignUp = () => {
         key="confirmPassword"
         id="confirmPassword"
         name="confirmPassword"
+        autoComplete="new-password"
         onChange={handleChange}
       />
       {isLoading ? (

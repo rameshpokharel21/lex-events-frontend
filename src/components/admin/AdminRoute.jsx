@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
   const { user } = useAuth();
-  console.log("From AdminRoute user: ", user);
+  //console.log("From AdminRoute user: ", user);
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
   if (!isAdmin) {
     return <Navigate to="/" />;

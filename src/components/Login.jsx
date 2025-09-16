@@ -26,7 +26,7 @@ const Login = () => {
       await login(form);
       //2.Fetch User details
       const res = await getUser();
-      console.log("From Login: user: ", res.data);
+      //console.log("From Login: user: ", res.data);
       //3.update with auth context
       setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
       //4.Redirect based on role
@@ -70,6 +70,7 @@ const Login = () => {
         key="password"
         id="password"
         name="password"
+        autoComplete="current-password"
         onChange={handleChange}
       />
 

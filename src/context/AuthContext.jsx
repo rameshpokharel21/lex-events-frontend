@@ -12,10 +12,10 @@ export const AuthProvider = ({ children }) => {
 
   //check user authenticated when mounted
   useEffect(() => {
-    console.log("AuthProvider mounted");
+    //console.log("AuthProvider mounted");
     getUser()
       .then((res) => {
-        console.log("Fetched user:", res.data);
+        //console.log("Fetched user:", res.data);
         setAuth((prev) => ({
           ...prev,
           isAuthenticated: true,

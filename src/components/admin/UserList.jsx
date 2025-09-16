@@ -20,7 +20,7 @@ const UserList = () => {
       try {
         setIsLoading(true);
         const res = await fetchAllUsers();
-        console.log("from UserList", res.data);
+        //console.log("from UserList", res.data);
         setUsers(res.data);
       } catch (err) {
         setError("Failed to fetch users." + err.message);
