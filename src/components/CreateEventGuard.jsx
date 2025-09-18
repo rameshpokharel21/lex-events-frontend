@@ -22,7 +22,7 @@ const CreateEventGuard = ({ children }) => {
       //check if alreadyverified flag AND timestamp are available
       if (alreadyVerified === "true" && verifiedAt) {
         const now = Date.now();
-        const expiryMillis = 15 * 60 * 1000;
+        const expiryMillis = 5 * 60 * 1000;
         const verifiedTime = parseInt(verifiedAt, 10);
         if (now - verifiedTime < expiryMillis) {
           setIsLoading(false);
