@@ -16,30 +16,28 @@ const CreateEventGuard = ({ children }) => {
         return;
       }
 
-      const alreadyVerified = sessionStorage.getItem("emailVerifiedForEvent");
-      const verifiedAt = sessionStorage.getItem("emailVerifiedAt");
+      const verified = sessionStorage.getItem("emailVerifiedForEvent");
+      const verifiedUntil = sessionStorage.getItem("emailVerifiedUntil");
 
-      //check if alreadyverified flag AND timestamp are available
-      if (alreadyVerified === "true" && verifiedAt) {
-        const now = Date.now();
-        const expiryMillis = 5 * 60 * 1000;
-        const verifiedTime = parseInt(verifiedAt, 10);
-        if (now - verifiedTime < expiryMillis) {
+      if (verified === "true" && verifiedUntil) {
+        const expiryTime = parseInt(verifiedUntil, 10);
+        if (Date.now() < expiryTime) {
           setIsLoading(false);
           return;
         } else {
           //expired, clean up
           sessionStorage.removeItem("emailVerifiedForEvent");
-          sessionStorage.removeItem("emailVerifiedAt");
+          sessionStorage.removeItem("emailVerifiedUntil");
         }
       }
 
-      //check with backend if expired or not
+      //Fallback to backend
       try {
-        const res = await isEmailVerified();
-        if (res.data.verified) {
+        const res = await isEmailVerified(); //expects 'verified' and 'expiresAt' from VerificationStatusResponse dto
+        if (res.data.verified && res.data.expiresAt) {
+          const expiryTime = new Date(res.data.expiresAt).getTime();
           sessionStorage.setItem("emailVerifiedForEvent", "true");
-          sessionStorage.setItem("emailVerifiedAt", Date.now().toString());
+          sessionStorage.setItem("emailVerifiedUntil", expiryTime.toString());
           setIsLoading(false);
         } else {
           navigate("/send-otp");
