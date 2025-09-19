@@ -59,6 +59,7 @@ const Login = () => {
         key="username"
         id="username"
         name="username"
+        autoComplete="username"
         onChange={handleChange}
       />
 

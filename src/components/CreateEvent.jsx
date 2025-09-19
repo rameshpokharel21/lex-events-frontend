@@ -145,7 +145,7 @@ const CreateEvent = () => {
               placeholder="Description"
               value={form.description}
               onChange={handleChange}
-              rows={4}
+              rows={5}
             />
           </label>
           {formErrors.description && (

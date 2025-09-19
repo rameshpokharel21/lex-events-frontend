@@ -90,6 +90,7 @@ const SignUp = () => {
         key="username"
         id="username"
         name="username"
+        autoComplete="username"
         onChange={handleChange}
       />
       <input
@@ -100,6 +101,7 @@ const SignUp = () => {
         key="email"
         id="email"
         name="email"
+        autoComplete="email"
         onChange={handleChange}
       />
       <input
