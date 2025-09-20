@@ -27,7 +27,7 @@ const EventDetails = () => {
       >
         {/* Gradient Accent */}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-indigo-400 via-green-400 to-red-400
+          className="absolute inset-0 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400
             opacity-20 rounded-xl pointer-events-none"
         ></div>
 
