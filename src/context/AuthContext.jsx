@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }) => {
         }));
       })
       .catch((err) => {
-        console.log(
-          "AuthContext: user not logged in.",
-          err.response?.data || err.message
-        );
+        // console.log(
+        //   "AuthContext: user not logged in.",
+        //   err.response?.data || err.message
+        // );
         setAuth((prev) => ({ ...prev, isAuthenticated: false, user: null }));
       })
       .finally(() => {
