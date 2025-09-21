@@ -16,6 +16,7 @@ import AdminRoute from "./components/admin/AdminRoute";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import UserList from "./components/admin/UserList";
 import ErrorPage from "./components/ErrorPage";
+import EditEvent from "./components/EditEvent";
 
 function App() {
   const { isAuthenticated, user } = useAuth();
@@ -66,6 +67,8 @@ function App() {
               </CreateEventGuard>
             }
           />
+
+          <Route path="/events/:id/edit" element={<EditEvent />} />
           <Route path="/send-otp" element={<SendOtp />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
 

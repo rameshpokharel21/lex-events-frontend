@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "https://lex-events-backend.onrender.com/api",
   withCredentials: true,
 });
 
@@ -10,6 +10,7 @@ export const login = (payload) => api.post("/auth/login", payload);
 export const fetchUpcomingEvents = () => api.get("/events/upcoming");
 export const fetchEventById = (id) => api.get(`/events/${id}`);
 export const createEvent = (eventData) => api.post("/events", eventData);
+export const editEvent = (id, payload) => api.put(`/events/${id}`, payload);
 export const sendOtp = () => api.post("/email/send-otp");
 export const verifyOtp = (payload) => api.post("/email/verify-otp", payload);
 //payload = {otp: "123456"}

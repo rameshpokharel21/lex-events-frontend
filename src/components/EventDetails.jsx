@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { fetchEventById } from "../services/api";
 import Spinner from "./Spinner";
+import useAuth from "../hooks/useAuth"
 
 const EventDetails = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const {user} = useAuth();
+  
 
   useEffect(() => {
     fetchEventById(id)
-      .then((res) => setEvent(res.data))
+      .then((res) =>{
+     
+        setEvent(res.data);
+    })
       .catch((err) => console.error("Error fetching event:", err))
       .finally(() => setIsLoading(false));
   }, [id]);
 
   if (isLoading) return <Spinner />;
   if (!event) return <div>Event not found.</div>;
+
+  const canEdit = user && event.creator && 
+          (user.userId === event.creator.userId || user.roles.includes("ROLE_ADMIN"));
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
@@ -72,14 +82,23 @@ const EventDetails = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mb-4">
+      <div className="flex flex-col sm-flex-row justify-center gap-4 mt-6">
+        { canEdit && (
+            <NavLink to={`/events/${event.eventId}/edit`} 
+            className="px-4 py-2 bg-blue-500 text-white font-semibold rounded  hover:bg-blue-600 transition-colors text-center">
+              Edit Event
+            </NavLink>
+          ) 
+        }
+
         <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          className="px-4 py-2 bg-gray-500 text-white font-semibold rounded hover:bg-gray-600 text-center"
           onClick={() => navigate("/events")}
         >
           Back to Event List
         </button>
       </div>
+
     </div>
   );
 };

@@ -16,7 +16,8 @@ const Navbar = () => {
       await api.post("/auth/logout");
       setAuth({ isAuthenticated: false, user: null, loading: false });
       sessionStorage.removeItem("emailVerifiedForEvent");
-      sessionStorage.removeItem("emailVerifiedAt");
+      sessionStorage.removeItem("emailVerifiedUntil");
+      sessionStorage.clear();
       navigate("/login");
     } catch (err) {
       console.error("Logout failed: ", err);
