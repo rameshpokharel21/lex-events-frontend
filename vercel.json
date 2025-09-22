@@ -2,11 +2,11 @@
 {
     "rewrites": [
         {
-            "source": "/api/{.*}",
+            "source": "/api/(.*)",
             "destination": "https://lex-events-backend.onrender.com/api/$1"
         },
         {
-            "source": "/{.*}",
+            "source": "/(.*)",
             "destination": "/"
         }
     ]
