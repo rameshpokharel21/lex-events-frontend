@@ -4,21 +4,22 @@ import { useEffect } from "react";
 import Spinner from "./Spinner";
 
 const Dashboard = () => {
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/login");
-    }
+  if (loading) return <Spinner />;
+  
+  if (!isAuthenticated) {
+    navigate("/login");
+    return null;
+  }
 
-    if (!isLoading && isAuthenticated && user?.roles?.includes("ROLE_ADMIN")) {
-      navigate("/admin");
-    }
-  }, [isAuthenticated, isLoading, navigate, user?.roles]);
+  if (user?.roles?.includes("ROLE_ADMIN")) {
+    navigate("/admin");
+    return null;
+  }
 
-  if(!user) return (<div>No user found</div>);
-  if (isLoading) return <Spinner />;
+  
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white">
       <div className="max-2-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 shadow-lg">
