@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       if(err.response?.status === 401){
         setAuth({isAuthenticated: false, user: null, loading: false, error: null});
       }else{
-        console.err("Error fetching user: ", err);
+        console.error("Error fetching user: ", err);
         setAuth({isAuthenticated: false, user: null, loading: false, error: "Unable to connect."});
       }
       

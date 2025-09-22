@@ -7,18 +7,21 @@ const Dashboard = () => {
   const { isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
 
-  if (loading) return <Spinner />;
+  useEffect(() => {
+    if (!loading){
   
-  if (!isAuthenticated) {
-    navigate("/login");
-    return null;
-  }
+      if (!isAuthenticated) {
+        navigate("/login", {replace: true});
+      }else if (user?.roles?.includes("ROLE_ADMIN")) {
+        navigate("/admin", {replace: true});
+      
+      }
+    }
+  }, [loading, isAuthenticated, navigate, user])
 
-  if (user?.roles?.includes("ROLE_ADMIN")) {
-    navigate("/admin");
-    return null;
-  }
-
+  if(loading) return <Spinner />; //show while checking auth;
+  if(!isAuthenticated) return null; //waiting for redirect
+  if(user?.roles?.includes("ROLE_ADMIN")) return null;//redirecting to admin
   
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white">
