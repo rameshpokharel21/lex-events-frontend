@@ -21,8 +21,22 @@ import Spinner from "./components/Spinner";
 
 function App() {
   const { isAuthenticated, loading} = useAuth();
-  if (loading) return <Spinner />;
-  
+ 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <Spinner />
+        <p className="mt-4 text-gray-600">Connecting to server...</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   //console.log(user);
   return (
     <div className="min-h-screen bg-gray-50">
