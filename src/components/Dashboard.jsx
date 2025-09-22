@@ -17,7 +17,7 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, isLoading, navigate, user?.roles]);
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || !user) return <Spinner />;
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-400 text-white">
       <div className="max-2-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-6 shadow-lg">

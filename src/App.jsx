@@ -17,10 +17,12 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import UserList from "./components/admin/UserList";
 import ErrorPage from "./components/ErrorPage";
 import EditEvent from "./components/EditEvent";
+import Spinner from "./components/Spinner";
 
 function App() {
-  const { isAuthenticated} = useAuth();
-
+  const { isAuthenticated, loading} = useAuth();
+  if (loading) return <Spinner />;
+  
   //console.log(user);
   return (
     <div className="min-h-screen bg-gray-50">
