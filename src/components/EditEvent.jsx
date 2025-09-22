@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { editEvent, fetchEventById } from "../services/api";
 import Spinner from "./Spinner";
 import EventForm from "./EventForm";
-import validateEventForm from "./utils/validateEventForm";
+import validateEventForm from "../utils/validateEventForm";
 
 const EditEvent = () => {
 

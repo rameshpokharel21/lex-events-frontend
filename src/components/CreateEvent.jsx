@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createEvent } from "../services/api";
 import Spinner from "./Spinner";
 import EventForm from "./EventForm";
-import validateEventForm from "./utils/validateEventForm";
+import validateEventForm from "../utils/validateEventForm";
 
 const CreateEvent = () => {
   const [form, setForm] = useState({
