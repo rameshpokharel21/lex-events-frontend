@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, replace, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Spinner from "./Spinner";
 import api from "../services/api";
@@ -21,12 +21,16 @@ const Navbar = () => {
       navigate("/login");
     } catch (err) {
       console.error("Logout failed: ", err);
+    }finally{
+      setAuth({ isAuthenticated: false, user: null, loading: false });
+      sessionStorage.clear();
+      navigate("/login", {replace: true});
     }
   };
   return (
     <div>
       <nav className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
-        <NavLink to="/" className="text-xl font-bold hover:underline">
+        <NavLink to="/login" className="text-xl font-bold hover:underline">
           Home
         </NavLink>
 

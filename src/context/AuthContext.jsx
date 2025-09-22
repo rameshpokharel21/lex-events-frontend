@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           user: res.data,
         }));
       })
-      .catch((err) => {
+      .catch(() => {
         // console.log(
         //   "AuthContext: user not logged in.",
         //   err.response?.data || err.message

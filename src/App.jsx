@@ -19,23 +19,25 @@ import ErrorPage from "./components/ErrorPage";
 import EditEvent from "./components/EditEvent";
 
 function App() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated} = useAuth();
+
   //console.log(user);
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="p-4">
         <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route
             path="/login"
-            element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
+            element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />}
           />
           <Route
             path="/register"
-            element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />}
+            element={!isAuthenticated ? <SignUp /> : <Navigate to="/dashboard" /> }
           />
           <Route
-            path="/"
+            path="/dashboard"
             element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
           />
           <Route
