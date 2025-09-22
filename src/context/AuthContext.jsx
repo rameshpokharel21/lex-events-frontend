@@ -12,26 +12,18 @@ export const AuthProvider = ({ children }) => {
 
   //check user authenticated when mounted
   useEffect(() => {
-    //console.log("AuthProvider mounted");
-    getUser()
-      .then((res) => {
-        //console.log("Fetched user:", res.data);
-        setAuth((prev) => ({
-          ...prev,
-          isAuthenticated: true,
-          user: res.data,
-        }));
-      })
-      .catch(() => {
-        // console.log(
-        //   "AuthContext: user not logged in.",
-        //   err.response?.data || err.message
-        // );
-        setAuth((prev) => ({ ...prev, isAuthenticated: false, user: null }));
-      })
-      .finally(() => {
-        setAuth((prev) => ({ ...prev, loading: false }));
-      });
+
+    const fetchUser = async() => {
+      try{
+        const res = await getUser();
+        setAuth({isAuthenticated: true, user: res.data, loading: false});
+      }catch{
+        setAuth({isAuthenticated: false, user: null, loading: false});
+      }
+    };
+
+    fetchUser();
+   
   }, []);
 
   return (

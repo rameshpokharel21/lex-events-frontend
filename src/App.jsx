@@ -27,19 +27,22 @@ function App() {
       <Navbar />
       <main className="p-4">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Navigate to="/login" replace/>} />
           <Route
             path="/login"
-            element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />}
+            element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace/>}
           />
+
+          <Route
+            path="/dashboard"
+            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace/>}
+          />
+
           <Route
             path="/register"
             element={!isAuthenticated ? <SignUp /> : <Navigate to="/dashboard" /> }
           />
-          <Route
-            path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
-          />
+          
           <Route
             path="/admin"
             element={
