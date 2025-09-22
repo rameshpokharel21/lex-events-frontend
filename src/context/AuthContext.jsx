@@ -13,17 +13,22 @@ export const AuthProvider = ({ children }) => {
   //check user authenticated when mounted
   useEffect(() => {
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
     const fetchUser = async() => {
       try{
         const res = await getUser();
         setAuth({isAuthenticated: true, user: res.data, loading: false});
       }catch{
         setAuth({isAuthenticated: false, user: null, loading: false});
+      }finally{
+        clearTimeout(timeout);
       }
     };
 
     fetchUser();
-   
+    return () => controller.abort();//cleanup
   }, []);
 
   return (
