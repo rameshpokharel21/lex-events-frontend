@@ -19,11 +19,12 @@ export const AuthProvider = ({ children }) => {
       setAuth({isAuthenticated: true, user: res.data, loading: false, error: null});
     }catch(err){
       if(err.response?.status === 401){
-        console.warn("User not logged in, redirecting to login.");
+        setAuth({isAuthenticated: false, user: null, loading: false, error: null});
       }else{
         console.err("Error fetching user: ", err);
+        setAuth({isAuthenticated: false, user: null, loading: false, error: "Unable to connect."});
       }
-      setAuth({isAuthenticated: false, user: null, loading: false, error: "Unable to connect."});
+      
     }finally{
       clearTimeout(timeout);
     }
