@@ -56,9 +56,10 @@ const SignUp = () => {
 
     setIsLoading(true);
     try {
-      const { confirmPassword, ...data } = form;
-      const res = await register(data);
+      const { confirmPassword: _confirmPassword, ...data } = form;
+      const _res = await register(data);
       setSuccess("Registered successfully! You can login now .");
+      
       setForm({
         username: "",
         email: "",
