@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://lex-events-backend.onrender.com/api",
+  baseURL: "/api",
   //import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
