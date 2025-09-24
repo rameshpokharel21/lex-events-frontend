@@ -149,7 +149,7 @@ const SignUp = () => {
         </button>
       )}
     </form>
-    <div className="flex flex-center mt-4">
+    <div className="flex justify-center mt-4">
       <NavLink to="/login"
         className="w-full max-w-xs px-4 py-2 text-center text-white bg-blue-400 hover:bg-blue-500 rounded transition duration-300"
         >
