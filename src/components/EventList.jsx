@@ -3,6 +3,7 @@ import { deleteEvent, fetchUpcomingEvents } from "../services/api";
 import Spinner from "./Spinner";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import formatDisplayDate from "../utils/formatDisplayDate";
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -76,7 +77,7 @@ const EventList = () => {
                   By: {event.creator?.userName}
                 </p>
                 <p className="text-sm text-gray-700">
-                  Date: {new Date(event.date).toLocaleString()}
+                  Date: {formatDisplayDate(event.date)}
                 </p>
                 {isAdmin && (
                   <button

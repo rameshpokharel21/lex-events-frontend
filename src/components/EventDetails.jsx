@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { fetchEventById } from "../services/api";
 import Spinner from "./Spinner";
 import useAuth from "../hooks/useAuth"
+import formatDisplayDate from "../utils/formatDisplayDate";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -55,7 +56,7 @@ const EventDetails = () => {
           </p>
           <p className="mb-2">
             <strong>Date: </strong>
-            {new Date(event.date).toLocaleString()}
+            {formatDisplayDate(event.date)}
           </p>
           <p className="mb-2">
             <strong>Created by: </strong>
