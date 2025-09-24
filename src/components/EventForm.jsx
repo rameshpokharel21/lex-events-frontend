@@ -98,7 +98,7 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
                 step="0.50"
                 name="entryFee"
                 placeholder="Entry Fee"
-                value={form.entryFee}
+                value={form.entryFee || ""}
                 onChange={handleChange}
               />
               {formErrors.entryFee && (
