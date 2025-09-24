@@ -76,10 +76,10 @@ const SignUp = () => {
   };
 
   return (
-   <>
+   <div className="max-w-md mx-auto mt-10">
      <form
       onSubmit={handelSubmit}
-      className="max-w-md mx-auto bg-white shadow-md p-6 rounded mt-10"
+      className="bg-white shadow-md p-6 rounded mt-10"
     >
       <h2 className="text-xl font-semibold mb-4">Register</h2>
       {error && <div className="text-red-500 mb-2">{error}</div>}
@@ -156,7 +156,7 @@ const SignUp = () => {
           Back to Login
         </NavLink>
     </div>
-   </>
+   </div>
   );
 };
 
