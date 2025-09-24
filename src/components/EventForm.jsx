@@ -131,7 +131,7 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
 
             <NavLink
               to="/"
-              className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-300"
+              className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-300 max-w-md"
             >
               Cancel
             </NavLink>
