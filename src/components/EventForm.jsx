@@ -120,12 +120,21 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
           {isLoading ? (
             <Spinner />
           ) : (
-            <button
+           <div className="flex justify-center">
+             <button
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
             >
               {isEditMode ? "Upadate Event" : "Create Event"}
             </button>
+
+            <NavLink
+              to="/"
+              className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-300"
+            >
+              Cancel
+            </NavLink>
+           </div>
           )}
         </form>
   );
