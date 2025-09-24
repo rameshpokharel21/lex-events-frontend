@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Spinner from "./Spinner";
 import { register } from "../services/api";
+import { NavLink } from "react-router-dom";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -75,7 +76,8 @@ const SignUp = () => {
   };
 
   return (
-    <form
+   <>
+     <form
       onSubmit={handelSubmit}
       className="max-w-md mx-auto bg-white shadow-md p-6 rounded mt-10"
     >
@@ -147,6 +149,14 @@ const SignUp = () => {
         </button>
       )}
     </form>
+    <div flex flex-center mt-4>
+      <NavLink to="/login"
+        className="px-6 py-2 text-center text-white bg-blue-400 hover:bg-blue-500 rounded transition duration-300"
+        >
+          Back to Login
+        </NavLink>
+    </div>
+   </>
   );
 };
 
