@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../services/api";
-import Spinner from "./Spinner";
+
 import EventForm from "./EventForm";
 import validateEventForm from "../utils/validateEventForm";
 
@@ -33,8 +33,9 @@ const CreateEvent = () => {
     try {
       setIsLoading(true);
       setFormErrors({});
-      const isoDate = form.date ? new Date(form.date).toISOString() : null;
-      const payload = { ...form, date: isoDate};
+      const payload = { ...form, date: form.date ? `${form.date}:00` : null};
+      console.log('form.date before sending: ', form.date);
+      console.log("payload.date being sent: ", form.date ? `${form.date}:00` : null);
       if (form.isFree) {
         payload.entryFee = null;
       }

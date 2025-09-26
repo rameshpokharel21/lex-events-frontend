@@ -1,6 +1,7 @@
 
 import Spinner from "./Spinner";
 import { NavLink } from "react-router-dom";
+import getLocalDateTimeString from "../utils/getLocalDateTimeString";
 
 const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode}) => {
   
@@ -72,9 +73,7 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
               name="date"
               value={form.date}
               onChange={handleChange}
-              min={new Date(Date.now() + 24 * 60 * 60 * 1000)
-                .toISOString()
-                .slice(0, 16)}
+              min={getLocalDateTimeString(new Date(Date.now() + 24 * 60 * 60 * 1000))}
             />
           </label>
           {formErrors.date && (
