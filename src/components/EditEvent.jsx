@@ -5,6 +5,7 @@ import Spinner from "./Spinner";
 import EventForm from "./EventForm";
 import validateEventForm from "../utils/validateEventForm";
 
+
 const EditEvent = () => {
 
     const [form, setForm] = useState(null);
@@ -20,17 +21,25 @@ const EditEvent = () => {
             setIsLoading(true);
             const res = await fetchEventById(id);
             const eventData = res.data;
+
+            //fix date
+            let dateForInput = eventData.date ? eventData.date.slice(0, 16) : "";
+            if(dateForInput.endsWith("Z")){
+                dateForInput = dateForInput.slice(0, -1);
+            }
+            
             setForm({
                 title: eventData.title,
                 description: eventData.description,
                 location: eventData.location,
-                date: eventData.date.slice(0,16),
+                date: dateForInput,
                 isFree: eventData.isFree,
                 entryFee: eventData.entryFee || null,
                 showContactInfo: eventData.showContactInfo,
             });
         }catch(err){
-            setFormErrors(err.response?.data?.messeage || "fetching event failed.")
+            setFormErrors({general: err.response?.data?.messeage || "fetching event failed."});
+            console.error("EditEvent error", err);
         }finally{
             setIsLoading(false);
         }
