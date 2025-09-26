@@ -51,12 +51,11 @@ const EditEvent = () => {
 
         try{
             setIsLoading(true);
-            const isoDate = form.date ? new Date(form.date).toISOString() : null;
-            const payload = {
-                ...form, date: isoDate,
+            const payload = { ...form, 
+                date: form.date ? `${form.date}:00` : null,
                 entryFee: form.isFree ? null : form.entryFee,
-            };
-            //console.log(payload);
+                };
+            console.log(payload);
             await editEvent(id, payload);
 
             //reset form
