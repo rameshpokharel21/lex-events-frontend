@@ -34,8 +34,8 @@ const CreateEvent = () => {
       setIsLoading(true);
       setFormErrors({});
       const payload = { ...form, date: form.date ? `${form.date}:00` : null};
-      console.log('form.date before sending: ', form.date);
-      console.log("payload.date being sent: ", form.date ? `${form.date}:00` : null);
+      //console.log('form.date before sending: ', form.date);
+      //console.log("payload.date being sent: ", form.date ? `${form.date}:00` : null);
       if (form.isFree) {
         payload.entryFee = null;
       }

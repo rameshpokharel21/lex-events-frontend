@@ -39,7 +39,7 @@ const EditEvent = () => {
             });
         }catch(err){
             setFormErrors({general: err.response?.data?.messeage || "fetching event failed."});
-            console.error("EditEvent error", err);
+            //console.error("EditEvent error", err);
         }finally{
             setIsLoading(false);
         }
@@ -64,7 +64,7 @@ const EditEvent = () => {
                 date: form.date ? `${form.date}:00` : null,
                 entryFee: form.isFree ? null : form.entryFee,
                 };
-            console.log(payload);
+            //console.log(payload);
             await editEvent(id, payload);
 
             //reset form
