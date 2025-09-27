@@ -18,26 +18,28 @@ import UserList from "./components/admin/UserList";
 import ErrorPage from "./components/ErrorPage";
 import EditEvent from "./components/EditEvent";
 import Spinner from "./components/Spinner";
+import { useEffect } from "react";
 
 function App() {
-  const { isAuthenticated, loading, error, fetchUser} = useAuth();
+  const { isAuthenticated} = useAuth();
  
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-center">
-        <Spinner />
-        <p className="mt-4 text-gray-600">Connecting to server...</p>
-        {error &&
-         <button
-            onClick={fetchUser}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Retry
-        </button>
-        }
-      </div>
-    );
-  }
+  
+  // if (loading) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-screen text-center">
+  //       <Spinner />
+  //       <p className="mt-4 text-gray-600">Connecting to server...</p>
+  //       {error &&
+  //        <button
+  //           onClick={fetchUser}
+  //           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+  //         >
+  //           Retry
+  //       </button>
+  //       }
+  //     </div>
+  //   );
+  // }
 
   //console.log(user);
   return (

@@ -81,7 +81,7 @@ const EditEvent = () => {
             navigate(`/events/${id}`);
         }catch(err){
             setFormErrors({general: err.response?.data?.message || "Update failed"});
-            console.error(err);
+            //console.error(err);
         }finally{
             setIsLoading(false);
         }
