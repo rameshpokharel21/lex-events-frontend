@@ -20,7 +20,7 @@ const CreateEventGuard = ({ children }) => {
       const verifiedUntil = sessionStorage.getItem("emailVerifiedUntil");
 
       if (verified === "true" && verifiedUntil) {
-        const expiryTime = parseInt(verifiedUntil, 10);
+        const expiryTime = parseInt(verifiedUntil, 5);
         if (Date.now() < expiryTime) {
           setIsLoading(false);
           return;

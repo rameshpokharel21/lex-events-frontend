@@ -7,13 +7,15 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuthenticated: false,
     user: null, //{username, roles: []}
-    loading: true,
+    loading: false,
     error: null,
   });
 
   const fetchUser = useCallback(async() => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
+    setAuth(prev => ({...prev, loading: true, error: null}));
+    
     try{
       const res = await getUser();
       setAuth({isAuthenticated: true, user: res.data, loading: false, error: null});
@@ -31,10 +33,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   //check user authenticated when mounted
-  useEffect(() => {
-    fetchUser();
+  // useEffect(() => {
+  //   fetchUser();
     
-  }, [fetchUser]);
+  // }, [fetchUser]);
 
   return (
     <AuthContext.Provider value={{ ...auth, setAuth,fetchUser }}>

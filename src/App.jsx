@@ -19,10 +19,11 @@ import ErrorPage from "./components/ErrorPage";
 import EditEvent from "./components/EditEvent";
 import Spinner from "./components/Spinner";
 
-
 function App() {
   const { isAuthenticated, loading, error, fetchUser} = useAuth();
- 
+  
+
+  //only show loading when explicitly checking auth
   
   if (loading) {
     return (
