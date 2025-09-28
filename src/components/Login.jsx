@@ -2,10 +2,10 @@ import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
-import { login } from "../services/api";
+import { getUser, login } from "../services/api";
 
 const Login = () => {
-  const { fetchUser } = useAuth();
+  const { setAuth } = useAuth();
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,16 +25,14 @@ const Login = () => {
       //1.Login api call
       await login(form);
 
-       //2.Fetch User details
-      const userData = await fetchUser(); // updates auth state in context
      
-      //const res = await getUser();
-      //console.log("From Login: user: ", res.data);
+      const res = await getUser();
+      console.log("From Login: user: ", res.data);
       //3.update with auth context
-      //setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
+      setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
       //4.Redirect based on role
-      //if (res.data.roles.includes("ROLE_ADMIN")) {
-      if(userData?.roles.includes("ROLE_ADMIN")){
+      
+      if(res.data.roles.includes("ROLE_ADMIN")){
         navigate("/admin");
       } else {
         navigate("/");
