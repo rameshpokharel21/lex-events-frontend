@@ -1,4 +1,4 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import getUser from "../services/api";
 
 export const AuthContext = createContext();
@@ -33,10 +33,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   //check user authenticated when mounted
-  // useEffect(() => {
-  //   fetchUser();
+  useEffect(() => {
+    fetchUser();
     
-  // }, [fetchUser]);
+  }, [fetchUser]);
 
   return (
     <AuthContext.Provider value={{ ...auth, setAuth, fetchUser }}>
