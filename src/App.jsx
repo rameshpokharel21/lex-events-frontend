@@ -61,7 +61,7 @@ function App() {
 
           <Route
             path="/register"
-            element={!isAuthenticated ? <SignUp /> : <Navigate to="/dashboard" /> }
+            element={!isAuthenticated ? <SignUp /> : <Navigate to="/dashboard" replace/> }
           />
           
           <Route
@@ -82,7 +82,7 @@ function App() {
           />
           <Route
             path="/events"
-            element={isAuthenticated ? <EventList /> : <Navigate to="/login" />}
+            element={isAuthenticated ? <EventList /> : <Navigate to="/login" replace/>}
           />
           <Route path="/events/:id" element={<EventDetails />} />
           <Route
@@ -94,9 +94,9 @@ function App() {
             }
           />
 
-          <Route path="/events/:id/edit" element={<EditEvent />} />
-          <Route path="/send-otp" element={<SendOtp />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/events/:id/edit" element={isAuthenticated ? <EditEvent /> : <Navigate to="/login" replace />} />
+          <Route path="/send-otp" element={isAuthenticated ? <SendOtp /> : <Navigate to="/login" replace/>} />
+          <Route path="/verify-otp" element={isAuthenticated ? <VerifyOtp /> : <Navigate to="/login" replace />} />
 
           <Route path="/*" element={<ErrorPage />} />
         </Routes>

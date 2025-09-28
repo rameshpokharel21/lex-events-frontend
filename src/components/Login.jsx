@@ -27,7 +27,7 @@ const Login = () => {
 
      
       const res = await getUser();
-      console.log("From Login: user: ", res.data);
+      //console.log("From Login: user: ", res.data);
       //3.update with auth context
       setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
       //4.Redirect based on role
