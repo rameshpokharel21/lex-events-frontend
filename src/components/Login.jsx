@@ -82,7 +82,12 @@ const Login = () => {
       />
 
       {isLoading ? (
-        <Spinner />
+        <div>
+          <Spinner />
+          <p className="text-gray-600 px-8 pb-4">
+            Server is starting up... may take a couple of minutes...
+          </p>
+        </div>
       ) : (
         <div className="flex justify-center">
           <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">

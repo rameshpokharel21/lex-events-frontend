@@ -142,7 +142,12 @@ const SignUp = () => {
         onChange={handleChange}
       />
       {isLoading ? (
-        <Spinner />
+        <div>
+          <Spinner />
+          <p className="text-gray-600 px-8">
+            Server is starting up... may take a couple of minutes...
+          </p>
+        </div>
       ) : (
         <button className="bg-green-300 text-white px-4 py-2 rounded hover:bg-green-500 w-full">
           Submit

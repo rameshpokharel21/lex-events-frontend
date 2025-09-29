@@ -18,6 +18,7 @@ import UserList from "./components/admin/UserList";
 import ErrorPage from "./components/ErrorPage";
 import EditEvent from "./components/EditEvent";
 import Spinner from "./components/Spinner";
+import HomePage from "./components/HomePage";
 
 function App() {
   const { isAuthenticated, loading, error, fetchUser} = useAuth();
@@ -48,7 +49,10 @@ function App() {
       <Navbar />
       <main className="p-4">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace/>} />
+          <Route path="/" element={
+            !isAuthenticated ? <HomePage /> : <Navigate to="/dashboard" replace />
+            } 
+          />
           <Route
             path="/login"
             element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace/>}
