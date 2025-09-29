@@ -1,4 +1,4 @@
-import { NavLink, replace, useNavigate } from "react-router-dom";
+import { NavLink,  useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Spinner from "./Spinner";
 import api from "../services/api";
@@ -26,8 +26,9 @@ const Navbar = () => {
   return (
     <div>
       <nav className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
-        <NavLink to="/login" className="text-xl font-bold hover:underline">
-          Home
+        <NavLink to={isAuthenticated ? "/dashboard" : "/" }
+          className="text-xl font-bold hover:underline">
+          {isAuthenticated ? "Dashboard" : "Home"}
         </NavLink>
 
         <EventShareLogo
