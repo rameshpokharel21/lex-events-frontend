@@ -88,7 +88,10 @@ function App() {
             path="/events"
             element={isAuthenticated ? <EventList /> : <Navigate to="/login" replace/>}
           />
-          <Route path="/events/:id" element={<EventDetails />} />
+          <Route 
+            path="/events/:id"
+            element={isAuthenticated ? <EventDetails /> : <Navigate to="/login" replace />} 
+          />
           <Route
             path="/events/create"
             element={
