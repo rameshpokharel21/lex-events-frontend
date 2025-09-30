@@ -59,7 +59,7 @@ const SignUp = () => {
     try {
       const { confirmPassword: _confirmPassword, ...data } = form;
       const _res = await register(data);
-      setSuccess("Registered successfully! You can login now .");
+      setSuccess("Registered successfully! You can log in now .");
       
       setForm({
         username: "",
@@ -69,7 +69,12 @@ const SignUp = () => {
         confirmPassword: "",
       });
     } catch (err) {
-      setError(err.response?.data?.message || "Register failed.");
+        if(err.code === "ECONNABORTED" || err.response?.status === 502){
+          setError("Server is starting up. Please try again!");
+        }
+        else{
+          setError(err.response?.data?.message || "Registration failed.");
+        }
     } finally {
       setIsLoading(false);
     }
