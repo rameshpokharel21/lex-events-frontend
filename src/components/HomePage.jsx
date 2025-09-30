@@ -31,7 +31,7 @@ const HomePage = () => {
                 Please register using your email.
             </li>
             <li>
-              <strong>Login: </strong>Login using your credentials.
+              <strong>Login: </strong>Log in using your credentials.
             </li>
           </ul>
 
