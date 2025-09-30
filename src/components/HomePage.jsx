@@ -27,11 +27,11 @@ const HomePage = () => {
           </h3>
           <ul className="list-disc pl-4 md:pl-6 mb-3 md:mb-4 space-y-2">
             <li>
-              <strong>Register/SignUp:</strong> If you haven't signed up before,
+              <strong>Register/SignUp: </strong>If you haven't signed up before,
                 Please register using your email.
             </li>
             <li>
-              <strong>Login:</strong>Login using your credentials.
+              <strong>Login: </strong>Login using your credentials.
             </li>
           </ul>
 
@@ -58,13 +58,13 @@ const HomePage = () => {
         </div>
         <div className="flex flex-row justify-center gap-4 mt-6">
             <button
-                className="px-4 py-2 bg-green-300 text-white font-semibold rounded hover:bg-green-400 text-center"
+                className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 text-center"
                 onClick={() => navigate("/login")}
                 >
                 Login
             </button>
             <button
-                className="px-4 py-2 bg-blue-300 text-white font-semibold rounded hover:bg-blue-400 text-center"
+                className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 text-center"
                 onClick={() => navigate("/register")}
                 >
                 Register
