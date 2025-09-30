@@ -69,7 +69,7 @@ const Navbar = () => {
                     isActive ? "underline font-semibold" : "hover:underline"
                   }
                 >
-                  Login
+                  Log In
                 </NavLink>
                 <NavLink
                   to="/register"

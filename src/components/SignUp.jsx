@@ -158,7 +158,7 @@ const SignUp = () => {
       <NavLink to="/login"
         className="w-full max-w-xs px-4 py-2 text-center text-white bg-blue-400 hover:bg-blue-500 rounded transition duration-300"
         >
-          Back to Login
+          Back to Login form
         </NavLink>
     </div>
    </div>

@@ -54,7 +54,7 @@ const Login = () => {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto bg-white shadow-md rounded mt-10"
     >
-      <h2 className="text-xl font-semibold mb-4">Login</h2>
+      <h2 className="text-xl font-semibold mb-4">Log In</h2>
       {error && <div className="text-red-500 mb-2">{error}</div>}
 
       <input
