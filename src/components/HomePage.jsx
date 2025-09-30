@@ -61,7 +61,7 @@ const HomePage = () => {
                 className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 text-center"
                 onClick={() => navigate("/login")}
                 >
-                Login
+                Log In
             </button>
             <button
                 className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 text-center"
