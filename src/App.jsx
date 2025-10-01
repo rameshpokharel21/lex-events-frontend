@@ -30,7 +30,7 @@ function App() {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-center">
         <Spinner />
-        <p className="mt-4 text-gray-600">Connecting to server...may take upto 2 minutes...</p>
+        <p className="mt-4 text-gray-600">Connecting to server...</p>
         {error &&
          <button
             onClick={fetchUser}

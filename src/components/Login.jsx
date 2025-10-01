@@ -85,7 +85,7 @@ const Login = () => {
         <div>
           <Spinner />
           <p className="text-gray-600 px-8 pb-4">
-            Server is starting up... may take a couple of minutes...
+            Server is starting up... may take longer...
           </p>
         </div>
       ) : (
