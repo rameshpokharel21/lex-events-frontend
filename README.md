@@ -1,12 +1,68 @@
-# React + Vite
+# Event Sharing  Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern event sharing web application built with React and vite.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ⚠️ Important Note: Backend Dependency
 
-## Expanding the ESLint configuration
+**This frontend application requires a backend server to be running for full functionality.** The backend API is available in a separate repository.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Backend Repository  
+    🔗 **Backend project**: [lex-events-backend](https://github.com/rameshpokharel21/lex-events-backend)
+    
+## 📦 Prerequisite
+
+Before running this project, make sure to have the following  
+1. **Backend API** running locally or deployed  
+2. Node.js (version 16 or higher)
+
+## 🌟 Features
+
+**Event Management**: Create, update, and view events  
+**Form Validation**: Client-side form validations  
+**Responsive Design**: Works on desktop and mobile devices  
+**Modern UI**: Clean and intutive user interface
+
+## 🛠️ Tech Stack
+
+**Frontend**: React 19  
+**Build Tool**: Vite  
+**Styling**: Tailwind CSS  
+**State Management**: React Context
+
+
+##⚡Quick Setup
+
+### Step 1: Set up the Backend  
+Clone and run the backend server first  
+ [lex-events-backend](https://github.com/rameshpokharel21/lex-events-backend)  
+### Step 2: Clone this repository  
+    ```bash  
+    git clone https://github.com/rameshpokharel21/lex-events-frontend.git
+   ```  
+### Step 3:  Install dependencies 
+    `npm install` or `yarn install` or `pnpm install`  
+### Step 4: Create .env file in the root directory and add your backend url:  
+    ```env
+    VITE_API_URL=http://localhost:9000
+    ```
+### Step 5: Start development server:  
+    `npm run dev'
+
+## 🔌API Integration
+
+The frontend communicates with the backend API for:  
+- ✅ User authentication and authorization
+- ✅ Event create, read, update, and delete operation
+- ✅ Data persistence and storage
+- ✅ Sending otp through email
+
+## 🐛 Common Issues
+
+- 503 Error: verify VITE_API_URL in .env file for correct backend url.  
+- CORS Errors: check backend CORS configuration to allow requests from the frontend url(http://localhost:5173)
+- Form submission Failures: checkFrontend or Backend validation erros in dev tools
+
+
+
+
