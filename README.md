@@ -37,9 +37,9 @@ Before running this project, make sure to have the following
 Clone and run the backend server first  
  [lex-events-backend](https://github.com/rameshpokharel21/lex-events-backend)  
 ### Step 2: Clone this repository  
-    ```bash  
+```bash  
     git clone https://github.com/rameshpokharel21/lex-events-frontend.git
-   ```  
+```  
 ### Step 3:  Install dependencies 
     `npm install` or `yarn install` or `pnpm install`  
 ### Step 4: Create .env file in the root directory and add your backend url:  
