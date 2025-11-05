@@ -30,8 +30,7 @@ Before running this project, make sure to have the following
 **Styling**: Tailwind CSS  
 **State Management**: React Context
 
-
-##⚡Quick Setup
+## ⚡Quick Setup
 
 ### Step 1: Set up the Backend  
 Clone and run the backend server first: [lex-events-backend](https://github.com/rameshpokharel21/lex-events-backend)  
