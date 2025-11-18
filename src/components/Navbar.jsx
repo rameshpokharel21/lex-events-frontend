@@ -32,8 +32,7 @@ const Navbar = () => {
         </NavLink>
 
         <EventShareLogo
-          width={160}
-          height={44}
+          size="small"
           className="hover:opacity-90 transition-opacity"
         />
 
