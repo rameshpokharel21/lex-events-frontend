@@ -4,6 +4,7 @@ import { createEvent } from "../services/api";
 
 import EventForm from "./EventForm";
 import validateEventForm from "../utils/validateEventForm";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CreateEvent = () => {
   const [form, setForm] = useState({
@@ -17,32 +18,31 @@ const CreateEvent = () => {
   });
 
   const [formErrors, setFormErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const errors = validateEventForm(form);
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      setFormErrors({});
+  const {mutate, isPending, error} = useMutation({
+    mutationFn: async(formData) => {
       const payload = { ...form, date: form.date ? `${form.date}:00` : null};
-      //console.log('form.date before sending: ', form.date);
-      //console.log("payload.date being sent: ", form.date ? `${form.date}:00` : null);
-      if (form.isFree) {
+       if (form.isFree) {
         payload.entryFee = null;
+      } else if(formData.entryFee){
+        payload.entryFee = parseFloat(formData.entryFee);
       }
-      
-      await createEvent(payload); //backend will reject if email not recently verified
 
-      //reset form
+      try{
+        //backend will reject if email not recently verified
+        const response = await createEvent(payload);
+        return response;
+      }catch{
+        console.log("API Error details: ", error);
+        console.log("Error response: ", error.response);
+        throw error;
+      }
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["events"]});
       setForm({
         title: "",
         description: "",
@@ -52,14 +52,12 @@ const CreateEvent = () => {
         entryFee: "",
         showContactInfo: false,
       });
-      //for multiple event creation within expiry time, don't remove session.
-      //sessionStorage.removeItem("emailVerifiedForEvent");
-      //sessionStorage.removeItem("emailVerifiedAt");
-
       navigate("/events");
-    } catch (err) {
-      const errorMessage =
-        err.response?.data.error || err.response?.data?.message;
+    },
+
+    onError: (err) => {
+      const errorMessage = 
+        err.response?.data?.error || err.response?.data?.message || "Event creation failed.";
       if (
         err.response?.status === 403 &&
         typeof errorMessage === "string" &&
@@ -67,15 +65,24 @@ const CreateEvent = () => {
       ) {
         navigate("/send-otp");
       } else {
-        const errorMessage =
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Event creation failed.";
+        
         setFormErrors({ general: errorMessage });
       }
-    } finally {
-      setIsLoading(false);
+    },
+  });
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const errors = validateEventForm(form);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
     }
+    setFormErrors({});
+    mutate(form);
+  
   };
 
   return (
@@ -95,7 +102,7 @@ const CreateEvent = () => {
           form={form}
           setForm={setForm}
           formErrors={formErrors}
-          isLoading={isLoading}
+          isLoading={isPending}
           onSubmit={handleSubmit}
           isEditMode={false}
         />
