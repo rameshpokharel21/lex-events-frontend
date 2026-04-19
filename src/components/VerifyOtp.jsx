@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { verifyOtp } from "../services/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
@@ -8,6 +9,7 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,18 +18,31 @@ const VerifyOtp = () => {
     try {
       setIsLoading(true);
       await verifyOtp({ otp: otp }); //backend marks EmailVerification as verified
-      sessionStorage.setItem("emailVerifiedForEvent", "true");
-      sessionStorage.setItem("emailVerifiedAt", Date.now().toString());
 
-      if (location.state?.fromCreateEvent) {
-        navigate("/events/create");
+      //update verification cache in sessionStorage
+      const expiryMillis = Date.now() + 10*60*1000;
+      sessionStorage.setItem("emailVerifiedForEvent", "true");
+      sessionStorage.setItem("emailVerifiedUntil", expiryMillis.toString());
+
+      //invalidate and wait for refetch to complete
+      await queryClient.invalidateQueries(["email-verification"]);
+      await queryClient.refetchQueries(["email-verification"]);
+
+      //Determine next destination
+      const fromCreateEvent = location.state?.fromCreateEvent || sessionStorage.getItem("createEventFlow") === "true";
+
+      sessionStorage.removeItem("createEventFlow");
+
+      if (fromCreateEvent) {
+        navigate("/events/create", {replace: true});
       } else {
+        console.log("location.state invalid: ", location.state);
         navigate("/"); //fallback
       }
     } catch (err) {
       setError(err.response?.data?.message || "Invalid OTP.");
       sessionStorage.removeItem("emailVerifiedForEvent");
-      sessionStorage.removeItem("emailVerifiedAt");
+      sessionStorage.removeItem("emailVerifiedUntil");
     } finally {
       setIsLoading(false);
     }
