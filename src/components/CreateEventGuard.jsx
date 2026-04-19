@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import Spinner from "./Spinner";
-import { isEmailVerified } from "../services/api";
+import { useEmailVerification } from "../context/useEmailVerification";
 
 const CreateEventGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const {data: verificationStatus, isLoading, isFetched} = useEmailVerification(isAuthenticated);
+  const isVerified = verificationStatus?.verified === true;
 
   useEffect(() => {
     const checkOtp = async () => {
@@ -15,41 +16,18 @@ const CreateEventGuard = ({ children }) => {
         navigate("/login");
         return;
       }
+      //if data not feteched yet
+      if(!isFetched) return;
 
-      const verified = sessionStorage.getItem("emailVerifiedForEvent");
-      const verifiedUntil = sessionStorage.getItem("emailVerifiedUntil");
-
-      if (verified === "true" && verifiedUntil) {
-        const expiryTime = parseInt(verifiedUntil, 5);
-        if (Date.now() < expiryTime) {
-          setIsLoading(false);
-          return;
-        } else {
-          //expired, clean up
-          sessionStorage.removeItem("emailVerifiedForEvent");
-          sessionStorage.removeItem("emailVerifiedUntil");
-        }
-      }
-
-      //Fallback to backend
-      try {
-        const res = await isEmailVerified(); //expects 'verified' and 'expiresAt' from VerificationStatusResponse dto
-        if (res.data.verified && res.data.expiresAt) {
-          const expiryTime = new Date(res.data.expiresAt).getTime();
-          sessionStorage.setItem("emailVerifiedForEvent", "true");
-          sessionStorage.setItem("emailVerifiedUntil", expiryTime.toString());
-          setIsLoading(false);
-        } else {
-          navigate("/send-otp");
-        }
-      } catch (err) {
-        console.error("Error verifying email", err);
-        navigate("/send-otp");
+      //only redirect after loading completes and we know it's definitely false
+      if(isVerified === false){
+        sessionStorage.setItem("createEventFlow", "true");
+        navigate("/send-otp", {state: {fromCreateEvent: true}});
       }
     };
 
     checkOtp();
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isLoading, isVerified, isFetched, navigate]);
 
   if (isLoading) return <Spinner />;
   return <>{children}</>;

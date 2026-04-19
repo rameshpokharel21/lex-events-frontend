@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../hooks/useAuth"
 import { isEmailVerified } from "../services/api";
 
-export const useEmailVerification = () => {
+export const useEmailVerification = (enabled = true) => {
     const {isAuthenticated} = useAuth();
 
     return useQuery({
@@ -11,7 +11,6 @@ export const useEmailVerification = () => {
             //first check session storage cache
             const verified = sessionStorage.getItem("emailVerifiedForEvent");
             const verifiedUntil = sessionStorage.getItem("emailVerifieduntil");
-
             if(verified === "true" && verifiedUntil){
                 const expiryTime = parseInt(verifiedUntil, 10);
                 if(DataTransfer.now() < expiryTime){
@@ -33,7 +32,7 @@ export const useEmailVerification = () => {
             }
             return res;
         },
-        enabled: isAuthenticated,
+        enabled: enabled || isAuthenticated,
         retry: 1,
         staleTime: 0,
         gcTime: 0,
