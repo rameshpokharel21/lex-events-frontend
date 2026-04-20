@@ -1,26 +1,32 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
-  //import.meta.env.VITE_API_URL,
+  //baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
-export const register = (payload) => api.post("/auth/register", payload);
-export const login = (payload) => api.post("/auth/login", payload);
-export const fetchUpcomingEvents = () => api.get("/events/upcoming");
-export const fetchEventById = (id) => api.get(`/events/${id}`);
-export const createEvent = (eventData) => api.post("/events", eventData);
-export const editEvent = (id, payload) => api.put(`/events/${id}`, payload);
+api.interceptors.request.use(
+  config => {
+    return config;
+  }
+);
+
+export const register = (payload) => api.post("/auth/register", payload).then(res => res.data);
+export const login = (payload) => api.post("/auth/login", payload).then(res => res.data);
+export const fetchUpcomingEvents = (signal) => api.get("/events/upcoming", {signal}).then(res => res.data);
+export const fetchEventById = (id, signal) => api.get(`/events/${id}`, {signal}).then(res => res.data);
+export const createEvent = (eventData) => api.post("/events", eventData).then(res => res.data);
+export const editEvent = (id, payload) => api.put(`/events/${id}`, payload).then(res => res.data);
 export const sendOtp = () => api.post("/email/send-otp");
-export const verifyOtp = (payload) => api.post("/email/verify-otp", payload);
+export const verifyOtp = (payload) => api.post("/email/verify-otp", payload).then(res => res.data);
 //payload = {otp: "123456"}
 
-export const isEmailVerified = () => api.get("/email/is-verified");
-export const deleteEvent = (id) => api.delete(`/admin/events/${id}`);
-export const fetchAllUsers = () => api.get("/admin/users");
-export const deleteUser = (id) => api.delete(`/admin/users/${id}`);
+export const isEmailVerified = (signal) => api.get("/email/is-verified", {signal}).then(res => res.data);
+export const deleteEvent = (id) => api.delete(`/admin/events/${id}`).then(res => res.data);
+export const fetchAllUsers = (signal) => api.get("/admin/users", {signal}).then(res => res.data);
+export const deleteUser = (id) => api.delete(`/admin/users/${id}`).then(res => res.data);
 
-export const getUser = () => api.get("/auth/user");
+export const getUser = ({signal}) => api.get("/auth/user", {signal}).then (res => res.data);
 
 export default api;
