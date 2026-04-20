@@ -3,26 +3,28 @@ import useAuth from "../hooks/useAuth";
 import Spinner from "./Spinner";
 import api from "../services/api";
 import EventShareLogo from "./EventShareLogo";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
-  const { isAuthenticated, user, loading, setAuth } = useAuth();
-
+  const { isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
-
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+  const queryClient = useQueryClient();
 
-  const handleLogout = async () => {
-    try {
-      await api.post("/auth/logout");
-      
-    } catch (err) {
-      console.error("Logout failed: ", err);
-    }finally{
-      setAuth({ isAuthenticated: false, user: null, loading: false });
-      sessionStorage.clear();
+  const logoutMutation = useMutation({
+    mutationFn: () => api.post("/auth/logout"),
+    onSettled: () => {
+      queryClient.setQueryData(["user"], null);
       navigate("/login", {replace: true});
-    }
-  };
+    },
+
+    onError: err => {
+      console.error("Logout failed: ", err);
+    },
+  });
+
+  const handleLogout = logoutMutation.mutate();
+
   return (
     <div>
       <nav className="bg-blue-600 text-white px-4 py-3 flex justify-between items-center">
@@ -55,9 +57,10 @@ const Navbar = () => {
                 )}
                 <button
                   onClick={handleLogout}
-                  className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+                  disabled={logoutMutation.isPending}
+                  className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 disabled:opacity-50"
                 >
-                  Logout
+                  {logoutMutation.isPending ? "Logging out..." : "Logout"}
                 </button>
               </>
             ) : (
