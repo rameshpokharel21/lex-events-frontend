@@ -24,7 +24,7 @@ export const verifyOtp = (payload) => api.post("/email/verify-otp", payload).the
 
 export const isEmailVerified = (signal) => api.get("/email/is-verified", {signal}).then(res => res.data);
 export const deleteEvent = (id) => api.delete(`/admin/events/${id}`).then(res => res.data);
-export const fetchAllUsers = (signal) => api.get("/admin/users", {signal}).then(res => res.data);
+export const fetchAllUsers = ({signal}) => api.get("/admin/users", {signal}).then(res => res.data);
 export const deleteUser = (id) => api.delete(`/admin/users/${id}`).then(res => res.data);
 
 export const getUser = ({signal, timeout} = {}) =>
