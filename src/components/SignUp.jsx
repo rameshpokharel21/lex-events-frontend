@@ -2,6 +2,7 @@ import { useState } from "react";
 import Spinner from "./Spinner";
 import { register } from "../services/api";
 import { NavLink } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -11,18 +12,39 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [validationError, setValidationError] = useState("");
+
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const mutation = useMutation({
+    mutationFn: (registerInfo) => register(registerInfo),
+    onSuccess: () => {
+      setForm({
+        username: "",
+        email: "",
+        phoneNumber: "",
+        password: "",
+        confirmPassword: "",
+      });
+    },
+  })
+
+  const getApiError = err => {
+    if(err?.code === "ECONNABORTED" || err?.response?.status === 502){
+          return "Server is starting up. Please try again!";
+    }
+      
+    return err.response?.data?.message || "Registration failed.";
+        
+  };
+
   const handelSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setValidationError("");
+    mutation.reset();
 
     // Basic validation
     if (
@@ -31,53 +53,32 @@ const SignUp = () => {
       !form.password.trim() ||
       !form.confirmPassword.trim
     ) {
-      setError("All fields are Required except phone number.");
+      setValidationError("All fields are Required except phone number.");
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
-      setError("Please enter a valid email address.");
+      setValidationError("Please enter a valid email address.");
       return;
     }
 
     if (form.phoneNumber.trim() && !/^\d{10}$/.test(form.phoneNumber.trim())) {
-      setError("Phone number must be 10 digits.");
+      setValidationError("Phone number must be 10 digits.");
       return;
     }
 
     if (form.password.trim().length < 6) {
-      setError("Password must be at least 6 characters.");
+      setValidationError("Password must be at least 6 characters.");
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
+      setValidationError("Passwords do not match.");
       return;
     }
-
-    setIsLoading(true);
-    try {
-      const { confirmPassword: _confirmPassword, ...data } = form;
-      const _res = await register(data);
-      setSuccess("Registered successfully! You can log in now .");
-      
-      setForm({
-        username: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-        confirmPassword: "",
-      });
-    } catch (err) {
-        if(err.code === "ECONNABORTED" || err.response?.status === 502){
-          setError("Server is starting up. Please try again!");
-        }
-        else{
-          setError(err.response?.data?.message || "Registration failed.");
-        }
-    } finally {
-      setIsLoading(false);
-    }
+    const {confirmPassword: _confirmPassword, ...data} = form;
+    mutation.mutate(data);
+    
   };
 
   return (
@@ -87,8 +88,9 @@ const SignUp = () => {
       className="bg-white shadow-md p-6 rounded mt-10"
     >
       <h2 className="text-xl font-semibold mb-4">Register</h2>
-      {error && <div className="text-red-500 mb-2">{error}</div>}
-      {success && <div className="text-green-600 mb-2">{success}</div>}
+      {validationError && <div className="text-red-500 mb-2">{validationError}</div>}
+      {mutation.error && <div className="text-red-500 mb-2">{getApiError(mutation.error)}</div>}
+      {mutation.isSuccess && <div className="text-green-600 mb-2">Registered successfully! You can log in now.</div>}
 
       <input
         className="block w-full border px-3 py-2 mb-4 rounded"
@@ -146,7 +148,7 @@ const SignUp = () => {
         autoComplete="new-password"
         onChange={handleChange}
       />
-      {isLoading ? (
+      {mutation.isPending ? (
         <div>
           <Spinner />
           <p className="text-gray-600 px-8">
