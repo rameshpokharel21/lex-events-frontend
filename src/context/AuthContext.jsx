@@ -12,16 +12,20 @@ export const AuthProvider = ({ children }) => {
     queryKey: ["user"],
     queryFn: async ({signal}) => {
       try{
-        const response = await getUser(signal);
+        // 8-second timeout: if Render backend is sleeping, fail fast and show
+        // the page as unauthenticated rather than blocking for ~2 minutes.
+        // warmupBackend() in App.jsx keeps the wake-up request alive in background.
+        const response = await getUser({signal, timeout: 8000});
         return {
           ...response,
           id: response.userId,
         }
       }catch(err){
-        console.log("X User fetch error: ", err);
-        console.log(err.response?.data);
-        console.log(err.message);
         if(err.response?.status === 401){
+          return null;
+        }
+        // Timeout or cancelled while backend sleeps — treat as unauthenticated
+        if(err.code === 'ECONNABORTED' || err.name === 'CanceledError'){
           return null;
         }
         throw err;

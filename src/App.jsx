@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import { warmupBackend } from "./services/api";
 import useAuth from "./hooks/useAuth";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
@@ -22,6 +24,10 @@ import HomePage from "./components/HomePage";
 
 function App() {
   const { isAuthenticated, loading, error, fetchUser} = useAuth();
+
+  useEffect(() => {
+    warmupBackend();
+  }, []);
   
 
   //only show loading when explicitly checking auth

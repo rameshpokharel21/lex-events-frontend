@@ -27,6 +27,12 @@ export const deleteEvent = (id) => api.delete(`/admin/events/${id}`).then(res =>
 export const fetchAllUsers = (signal) => api.get("/admin/users", {signal}).then(res => res.data);
 export const deleteUser = (id) => api.delete(`/admin/users/${id}`).then(res => res.data);
 
-export const getUser = ({signal}) => api.get("/auth/user", {signal}).then (res => res.data);
+export const getUser = ({signal, timeout} = {}) =>
+  api.get("/auth/user", {signal, ...(timeout && {timeout})}).then(res => res.data);
+
+// Fire-and-forget: silently wakes the Render backend without affecting UI state
+export const warmupBackend = () => {
+  api.get("/auth/user", {timeout: 180000}).catch(() => {});
+};
 
 export default api;
