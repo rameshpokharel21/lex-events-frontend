@@ -1,18 +1,72 @@
-import { useEffect, useState } from "react";
+
 import { deleteEvent, fetchUpcomingEvents } from "../services/api";
 import Spinner from "./Spinner";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import formatDisplayDate from "../utils/formatDisplayDate";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const EventList = () => {
-  const [events, setEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const { user, loading } = useAuth();
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
-  //console.log("logged in user: ", user);
-  //console.log("user roles:", user?.roles);
+  const queryClient = useQueryClient();
+
+  const {data: events = [], isPending, isError, error, refetch} = useQuery({
+    queryKey: ["events"],
+    queryFn: async ({signal}) => {
+      return await fetchUpcomingEvents(signal);
+    },
+    staleTime: 2*60*1000,
+  });
+
+  const {mutate, isPending: isDeleting} = useMutation({
+    mutationFn: deleteEvent,
+    onMutate: async(eventId) => {
+      await queryClient.cancelQueries({queryKey: ["events"]});
+      const previousEvents = queryClient.getQueryData(["events"]);
+      queryClient.setQueryData(["events"], old => old ? old.filter(event => event.eventId !== eventId) : []);
+      return {previousEvents};
+    },
+    onError: (err, eventId, context) => {
+      queryClient.setQueryData(["events"], context.previousEvents);
+      alert("Event could not be deleted");
+      console.error(err.response?.data?.message || err.message);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey: ["events"]});
+    },
+  });
+
+
+
+  const handleDeleteEvent = (eventId) => {
+    if(window.confirm("Are you sure to delete this event?")){
+      mutate(eventId);
+    }
+  };
+
+  if (loading || isPending) return <Spinner />;
+
+   if (isError){
+     return(
+            <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-red-500 text-lg">Failed to load events</p>
+                    <p className="text-gray-600 mb-4">
+                        {error?.message}
+                    </p>
+                    <button
+                        onClick={() => refetch()}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        )
+  }
+
   const colors = [
     "bg-blue-200",
     "bg-green-200",
@@ -22,39 +76,13 @@ const EventList = () => {
     "bg-orange-200",
   ];
 
-  useEffect(() => {
-    fetchUpcomingEvents()
-      .then((res) => {
-        setEvents(res.data);
-      })
-      .catch((err) => console.error("Failed to fetch events: ", err))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleDeleteEvent = async (eventId) => {
-    try {
-      setIsLoading(true);
-      await deleteEvent(eventId);
-      setEvents(events.filter((e) => e.eventId !== eventId)); //update UI
-    } catch (err) {
-      alert("user could not be deleted!");
-      console.error(err.response?.data?.message || err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (loading || isLoading) return <Spinner />;
-
   return (
     <div className="min-h-screen p-6 bg-gray-50">
       <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">
         Upcoming Events
       </h1>
 
-      {isLoading ? (
-        <Spinner />
-      ) : events.length === 0 ? (
+      {events.length === 0 ? (
         <p className="text-center text-gray-500">No upcoming events.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -82,6 +110,7 @@ const EventList = () => {
                 {isAdmin && (
                   <button
                     onClick={() => handleDeleteEvent(event.eventId)}
+                    disabled={isDeleting}
                     className="bg-red-500 text-white px-4 py-2 rounded"
                   >
                     Delete Event
