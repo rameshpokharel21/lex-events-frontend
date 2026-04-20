@@ -34,10 +34,10 @@ const CreateEvent = () => {
         //backend will reject if email not recently verified
         const response = await createEvent(payload);
         return response;
-      }catch{
+      }catch(err){
         console.log("API Error details: ", error);
         console.log("Error response: ", error.response);
-        throw error;
+        throw err;
       }
     },
 
