@@ -12,7 +12,7 @@ const Navbar = () => {
   const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
-    mutationFn: () => api.post("/auth/logout"),
+    mutationFn: async () => await api.post("/auth/logout"),
     onSettled: () => {
       queryClient.setQueryData(["user"], null);
       navigate("/login", {replace: true});
@@ -23,7 +23,7 @@ const Navbar = () => {
     },
   });
 
-  const handleLogout = logoutMutation.mutate();
+  const handleLogout = () => logoutMutation.mutate();
 
   return (
     <div>

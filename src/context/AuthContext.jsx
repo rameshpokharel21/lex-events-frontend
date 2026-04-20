@@ -1,5 +1,5 @@
 import { createContext} from "react";
-import getUser from "../services/api";
+import {getUser} from "../services/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const AuthContext = createContext();
