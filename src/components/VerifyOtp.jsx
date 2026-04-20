@@ -63,6 +63,7 @@ const VerifyOtp = () => {
         onChange={(e) => setOtp(e.target.value)}
         placeholder="Enter 6-digit OTP"
         className="block w-full border p-2 mb-4 rounded"
+        autoFocus
         required
       />
       <button
