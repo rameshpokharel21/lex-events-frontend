@@ -35,6 +35,7 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
             placeholder="Title"
             value={form.title}
             onChange={handleChange}
+            autoFocus
           />
           {formErrors.title && (
             <div className="text-red-500 mb-2">{formErrors.title}</div>
