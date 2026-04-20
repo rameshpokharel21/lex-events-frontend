@@ -25,5 +25,5 @@ dist-ssr
 
 # others
 .env
-.CHANGES.md
-.claude/*
+CHANGES.md
+.claude/
