@@ -1,33 +1,51 @@
-import { useEffect, useState } from "react";
+
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { fetchEventById } from "../services/api";
 import Spinner from "./Spinner";
 import useAuth from "../hooks/useAuth"
 import formatDisplayDate from "../utils/formatDisplayDate";
+import { useQuery } from "@tanstack/react-query";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const {user} = useAuth();
+
+  const {data:event, isPending, isError, error} = useQuery({
+    queryKey: ["events", id],
+    queryFn: async ({signal}) => {
+      const eventData = await fetchEventById(id, signal);
+      return eventData;
+    },
+    retry: 1,
+    staleTime: 5*60*1000,
+  });
   
 
-  useEffect(() => {
-    fetchEventById(id)
-      .then((res) =>{
-     
-        setEvent(res.data);
-    })
-      .catch((err) => console.error("Error fetching event:", err))
-      .finally(() => setIsLoading(false));
-  }, [id]);
+  if (isPending) return <Spinner />;
+  if (isError){
+     return(
+            <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Event</h2>
+                    <p className="text-gray-700 mb-4">
+                        {error.response?.data?.message || error.message || "Failed to load event details"}
+                    </p>
+                    <button
+                        onClick={() => navigate("/events")}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Back to Events
+                    </button>
+                </div>
+            </div>
+        )
+  }
 
-  if (isLoading) return <Spinner />;
   if (!event) return <div>Event not found.</div>;
 
   const canEdit = user && event.creator && 
-          (user.userId === event.creator.userId || user.roles.includes("ROLE_ADMIN"));
+          (user.id === event.creator.userId || user.roles.includes("ROLE_ADMIN"));
 
 
   return (
@@ -38,7 +56,7 @@ const EventDetails = () => {
       >
         {/* Gradient Accent */}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-green-400 via-yellow-400 to-red-400
+          className="absolute inset-0 bg-linear-to-r from-green-400 via-yellow-400 to-red-400
             opacity-20 rounded-xl pointer-events-none"
         ></div>
 
