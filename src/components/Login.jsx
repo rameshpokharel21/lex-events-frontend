@@ -1,52 +1,54 @@
 import { useState } from "react";
-import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
-import { getUser, login } from "../services/api";
+import { login } from "../services/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Login = () => {
-  const { setAuth } = useAuth();
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    //clear error on typing
+    if(error) setError("");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (loginResponse) => {
+      queryClient.setQueryData(["user"], {
+        id: loginResponse.userId,
+        username: loginResponse.username,
+        roles: loginResponse.roles,
+      });
 
-    try {
-      setIsLoading(() => true);
-      //1.Login api call
-      await login(form);
-
-     
-      const res = await getUser();
-      //console.log("From Login: user: ", res.data);
-      //3.update with auth context
-      setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data }));
-      //4.Redirect based on role
-      
-      if(res.data.roles.includes("ROLE_ADMIN")){
+      if(loginResponse.roles?.includes("ROLE_ADMIN")){
         navigate("/admin");
-      } else {
+      }else{
         navigate("/");
       }
-    } catch (err) {
-      if(err.code === "ECONNABORTED" || err.response?.status === 502){
+    },
+
+    onError: (err) => {
+      console.log("Login error details: ", err);
+       if(err.code === "ECONNABORTED" || err.response?.status === 502){
         setError("Server is starting up. Please try again!");
+      }else if(err.response?.status === 401){
+        setError("Invalid username or password");
+      }else{
+        setError(() => err.response?.data?.message || "Login failed");
       }
-      else{
-      setError(() => err.response?.data?.message || "Login failed.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    },
+
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+    loginMutation.mutate(form);
   };
 
   return (
@@ -81,7 +83,7 @@ const Login = () => {
         onChange={handleChange}
       />
 
-      {isLoading ? (
+      {loginMutation.isPending ? (
         <div>
           <Spinner />
           <p className="text-gray-600 px-8 pb-4">
