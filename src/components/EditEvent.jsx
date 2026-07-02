@@ -43,6 +43,7 @@ const EditEvent = () => {
                 isFree: eventData.isFree !== undefined ? eventData.isFree : true,
                 entryFee: eventData.entryFee || "",
                 showContactInfo: eventData.showContactInfo,
+                imageKey: eventData.imageKey || "",
             };
             setForm(formData);
         }   

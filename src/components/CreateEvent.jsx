@@ -15,6 +15,7 @@ const CreateEvent = () => {
     isFree: true,
     entryFee: "",
     showContactInfo: false,
+    imageKey: "",
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -51,6 +52,7 @@ const CreateEvent = () => {
         isFree: true,
         entryFee: "",
         showContactInfo: false,
+        imageKey: "",
       });
       navigate("/events");
     },

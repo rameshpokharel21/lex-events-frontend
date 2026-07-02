@@ -2,9 +2,9 @@
 import Spinner from "./Spinner";
 import { NavLink } from "react-router-dom";
 import getLocalDateTimeString from "../utils/getLocalDateTimeString";
+import { EVENT_IMAGES } from "../utils/eventImages";
 
 const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode}) => {
-  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -14,9 +14,12 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
     });
   };
 
+  const handleImageSelect = (key) => {
+    setForm({ ...form, imageKey: form.imageKey === key ? "" : key });
+  };
 
   return (
-      
+
         <form
           onSubmit={onSubmit}
           className="max-w-xl mx-auto bg-white p-6 shadow rounded"
@@ -29,7 +32,6 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
 
           <input
             className="w-full border p-2 mb-3 rounded"
-            //className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             type="text"
             name="title"
             placeholder="Title"
@@ -118,6 +120,47 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
             Show my contact info publicly
           </label>
 
+          {/* Image picker */}
+          <div className="mb-4">
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              Event image{" "}
+              <span className="text-gray-400 font-normal">(optional — defaults to City Center)</span>
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {EVENT_IMAGES.map(({ key, label, src }) => {
+                const selected = form.imageKey === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => handleImageSelect(key)}
+                    className={`relative rounded overflow-hidden border-2 transition-all focus:outline-none
+                      ${selected
+                        ? "border-blue-500 ring-2 ring-blue-300"
+                        : "border-transparent hover:border-gray-300"
+                      }`}
+                  >
+                    <img
+                      src={src}
+                      alt={label}
+                      className="w-full h-20 object-cover"
+                    />
+                    <span className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs text-center py-0.5 truncate px-1">
+                      {label}
+                    </span>
+                    {selected && (
+                      <span className="absolute top-1 right-1 bg-blue-500 rounded-full w-4 h-4 flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {isLoading ? (
             <Spinner />
           ) : (
@@ -126,7 +169,7 @@ const EventForm = ({form, setForm, formErrors, isLoading, onSubmit, isEditMode})
               type="submit"
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              {isEditMode ? "Upadate Event" : "Create Event"}
+              {isEditMode ? "Update Event" : "Create Event"}
             </button>
 
             <NavLink
