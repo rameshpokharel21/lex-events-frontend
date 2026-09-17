@@ -35,7 +35,7 @@ const UserList = () => {
     return (
       <div className="p-4">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          Failed to fetch users. {error.message}
+          Failed to fetch users. {error.response?.data?.message || error.message}
         </div>
       </div>
     );
@@ -44,6 +44,11 @@ const UserList = () => {
   return (
     <div>
       <h2>Users</h2>
+      {deleteMutation.error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 mb-2 rounded">
+          {deleteMutation.error.response?.data?.message || "Failed to delete user."}
+        </div>
+      )}
       {users.map((user) => (
         <div
           key={user.userId}

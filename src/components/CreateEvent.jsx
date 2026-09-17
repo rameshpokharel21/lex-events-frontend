@@ -22,7 +22,7 @@ const CreateEvent = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const {mutate, isPending, error} = useMutation({
+  const {mutate, isPending} = useMutation({
     mutationFn: async(formData) => {
       const payload = { ...form, date: form.date ? `${form.date}:00` : null};
        if (form.isFree) {
@@ -31,15 +31,8 @@ const CreateEvent = () => {
         payload.entryFee = parseFloat(formData.entryFee);
       }
 
-      try{
-        //backend will reject if email not recently verified
-        const response = await createEvent(payload);
-        return response;
-      }catch(err){
-        console.log("API Error details: ", error);
-        console.log("Error response: ", error.response);
-        throw err;
-      }
+      //backend rejects with 403 EMAIL_VERIFICATION_REQUIRED if email not verified in the last 10 minutes
+      return createEvent(payload);
     },
 
     onSuccess: () => {
@@ -58,16 +51,12 @@ const CreateEvent = () => {
     },
 
     onError: (err) => {
-      const errorMessage = 
-        err.response?.data?.error || err.response?.data?.message || "Event creation failed.";
-      if (
-        err.response?.status === 403 &&
-        typeof errorMessage === "string" &&
-        errorMessage.includes("OTP expired")
-      ) {
-        navigate("/send-otp");
+      const errorMessage = err.response?.data?.message || "Event creation failed.";
+      if (err.response?.status === 403 && errorMessage === "EMAIL_VERIFICATION_REQUIRED") {
+        // verification window expired while filling the form
+        sessionStorage.setItem("createEventFlow", "true");
+        navigate("/send-otp", { state: { fromCreateEvent: true } });
       } else {
-        
         setFormErrors({ general: errorMessage });
       }
     },

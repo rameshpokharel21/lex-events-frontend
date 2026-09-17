@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   if (!user || !user.roles) return <Spinner />;
   //console.log("admnDashboard user: ", user);
 
-  const isAdmin = () => user.roles?.incluedes("ROLE_ADMIN") || false;
+  const isAdmin = user.roles.includes("ROLE_ADMIN");
 
   return (
     <div className="p-4 max-w-3xl mx-auto">

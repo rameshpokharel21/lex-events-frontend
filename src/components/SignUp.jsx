@@ -51,7 +51,7 @@ const SignUp = () => {
       !form.username.trim() ||
       !form.email.trim() ||
       !form.password.trim() ||
-      !form.confirmPassword.trim
+      !form.confirmPassword.trim()
     ) {
       setValidationError("All fields are Required except phone number.");
       return;

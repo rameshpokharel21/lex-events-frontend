@@ -42,15 +42,16 @@ git clone https://github.com/rameshpokharel21/lex-events-frontend.git
 `npm install` or `yarn install` or `pnpm install`  
 ### Step 4: Create .env file in the root directory and add your backend url:  
 ```env
-VITE_API_URL=http://localhost:9000
+VITE_API_URL=http://localhost:9000/api
 ```
+(See `.env.example`. In production Vercel uses `VITE_API_URL=https://events-api.lexnepali.com/api`.)
 ### Step 5: Start development server:  
 `npm run dev`
 
 ## 🔌API Integration
 
 The frontend communicates with the backend API for:  
-- ✅ User authentication and authorization
+- ✅ User authentication and authorization (HttpOnly access + refresh cookies; an expired access token is refreshed automatically)
 - ✅ Event create, read, update, and delete operation
 - ✅ Data persistence and storage
 - ✅ Sending otp through email
@@ -58,7 +59,8 @@ The frontend communicates with the backend API for:
 ## 🐛 Common Issues
 
 - 503 Error: verify VITE_API_URL in .env file for correct backend url.  
-- CORS Errors: check backend CORS configuration to allow requests from the frontend url (http://localhost:5173)
+- CORS Errors: the backend `ALLOWED_ORIGINS` must contain the frontend URL (http://localhost:5173 locally, https://events.lexnepali.com in production)
+- Logged out right after login: the backend cookie settings must match the environment (`COOKIE_SECURE=false` on http://localhost, `true` on https)
 - Form submission Failures: checkFrontend or Backend validation erros in dev tools
 
 

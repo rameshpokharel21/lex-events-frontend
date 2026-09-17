@@ -1,50 +1,55 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyOtp } from "../services/api";
+import { sendOtp, verifyOtp } from "../services/api";
 import { useQueryClient } from "@tanstack/react-query";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
   const location = useLocation();
+  const [notice, setNotice] = useState(location.state?.notice || "");
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const queryClient = useQueryClient();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setNotice("");
 
     try {
       setIsLoading(true);
-      await verifyOtp({ otp: otp }); //backend marks EmailVerification as verified
+      // Backend returns { verified: true, expiresAt } — the 10-minute window starts now
+      const status = await verifyOtp({ otp: otp.trim() });
+      queryClient.setQueryData(["email-verification"], status);
+      await queryClient.invalidateQueries({ queryKey: ["email-verification"] });
 
-      //update verification cache in sessionStorage
-      const expiryMillis = Date.now() + 10*60*1000;
-      sessionStorage.setItem("emailVerifiedForEvent", "true");
-      sessionStorage.setItem("emailVerifiedUntil", expiryMillis.toString());
-
-      //invalidate and wait for refetch to complete
-      await queryClient.invalidateQueries(["email-verification"]);
-      await queryClient.refetchQueries(["email-verification"]);
-
-      //Determine next destination
-      const fromCreateEvent = location.state?.fromCreateEvent || sessionStorage.getItem("createEventFlow") === "true";
-
+      const fromCreateEvent =
+        location.state?.fromCreateEvent || sessionStorage.getItem("createEventFlow") === "true";
       sessionStorage.removeItem("createEventFlow");
 
-      if (fromCreateEvent) {
-        navigate("/events/create", {replace: true});
-      } else {
-        console.log("location.state invalid: ", location.state);
-        navigate("/"); //fallback
-      }
+      navigate(fromCreateEvent ? "/events/create" : "/", { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid OTP.");
-      sessionStorage.removeItem("emailVerifiedForEvent");
-      sessionStorage.removeItem("emailVerifiedUntil");
+      setError(err.response?.data?.message || "Invalid code.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setError("");
+    setNotice("");
+    try {
+      setIsResending(true);
+      await sendOtp();
+      setOtp("");
+      setNotice("A new code was sent to your email.");
+    } catch (err) {
+      // 429 = cooldown; 503 = email could not be sent
+      setError(err.response?.data?.message || "Failed to resend the code.");
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -53,15 +58,18 @@ const VerifyOtp = () => {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto p-6 bg-white shadow rounded"
     >
-      <h2 className="text-xl font-bold mb-4">Enter OTP</h2>
+      <h2 className="text-xl font-bold mb-4">Enter verification code</h2>
+      {notice && <p className="text-green-600 mb-2">{notice}</p>}
       {error && <p className="text-red-500 mb-2">{error}</p>}
       <input
         type="text"
+        inputMode="numeric"
+        autoComplete="one-time-code"
         pattern="\d{6}"
         maxLength={6}
         value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-        placeholder="Enter 6-digit OTP"
+        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+        placeholder="Enter 6-digit code"
         className="block w-full border p-2 mb-4 rounded"
         autoFocus
         required
@@ -75,7 +83,15 @@ const VerifyOtp = () => {
             : "bg-blue-500 hover:bg-blue-600"
         }`}
       >
-        {isLoading ? "Verifying OTP..." : "Verify OTP"}
+        {isLoading ? "Verifying..." : "Verify"}
+      </button>
+      <button
+        type="button"
+        onClick={handleResend}
+        disabled={isResending}
+        className="w-full mt-3 text-sm text-blue-600 hover:underline disabled:opacity-60"
+      >
+        {isResending ? "Sending..." : "Didn't get a code? Resend"}
       </button>
     </form>
   );

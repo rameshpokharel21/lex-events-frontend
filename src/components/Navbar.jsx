@@ -1,7 +1,7 @@
 import { NavLink,  useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Spinner from "./Spinner";
-import api from "../services/api";
+import { logout } from "../services/api";
 import EventShareLogo from "./EventShareLogo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -12,9 +12,12 @@ const Navbar = () => {
   const queryClient = useQueryClient();
 
   const logoutMutation = useMutation({
-    mutationFn: async () => await api.post("/auth/logout"),
+    mutationFn: logout,
     onSettled: () => {
+      // forget the user and every cached query (events, email verification, admin lists)
       queryClient.setQueryData(["user"], null);
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== "user" });
+      sessionStorage.removeItem("createEventFlow");
       navigate("/login", {replace: true});
     },
 
